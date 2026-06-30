@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Seetha Lakshmi.M — Dynamic SEO Strategist driving measurable organic growth through Technical SEO, Content Strategy, and Answer Engine Optimization.">
+    <meta name="author" content="Seetha Lakshmi.M">
+    <title>Seetha Lakshmi.M | SEO Strategist</title>
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fonts: Syne (display) + Inter (body) + Cormorant Garamond (italic accents) -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <style>
+        /* ─────────────────────────────────────────
+           DESIGN TOKENS
+        ───────────────────────────────────────── */
+        :root {
+            --bg:            #0A0A0B;
+            --bg-2:          #0D0D0F;
+            --bg-card:       #101013;
+            --accent:        #108e10;
+            --accent-hi:     #1ec42a;
+            --accent-glow:   rgba(196, 30, 58, 0.18);
+            --txt:           #F0EDE8;
+            --txt-2:         #6E6E78;
+            --txt-muted:     #2E2E34;
+            --border:        #18181C;
+            --border-hi:     rgba(45, 142, 16, 0.35);
+        }
+
+        /* ─────────────────────────────────────────
+           RESET + BASE
+        ───────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { background: var(--bg); scroll-behavior: auto; overflow-x: hidden; }
+        body {
+            background: var(--bg);
+            color: var(--txt);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+        }
+        body::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+        *, *::before, *::after { cursor: none !important; }
+
+        /* ─────────────────────────────────────────
+           SCROLL PROGRESS
+        ───────────────────────────────────────── */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+            transform-origin: left center;
+            transform: scaleX(0);
+            z-index: 99999;
+        }
+
+        /* ─────────────────────────────────────────
+           CUSTOM CURSOR
+        ───────────────────────────────────────── */
+        .c-outer {
+            position: fixed;
+            width: 38px; height: 38px;
+            border: 1px solid rgba(196, 30, 58, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+            transition: width .3s, height .3s, background .3s, border-color .3s;
+        }
+        .c-inner {
+            position: fixed;
+            width: 5px; height: 5px;
+            background: var(--accent-hi);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+        .c-outer.is-hover {
+            width: 56px; height: 56px;
+            background: rgba(142,16,17,0.1);
+            border-color: var(--accent-hi);
+        }
+        .c-outer.is-click { width: 28px; height: 28px; }
+
+        /* ─────────────────────────────────────────
+           PRELOADER
+        ───────────────────────────────────────── */
+        #preloader {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .pre-label {
+            font-family: 'Inter', sans-serif;
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--txt-2);
+            margin-bottom: 1.2rem;
+            opacity: 0;
+        }
+        .pre-name {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 800;
+            color: var(--txt);
+            line-height: .95;
+            text-transform: uppercase;
+            overflow: hidden;
+        }
+        .pre-name-inner { display: block; transform: translateY(110%); }
+        .pre-line {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-hi), transparent);
+            margin: 1.5rem auto;
+        }
+        .pre-count {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-style: italic;
+            font-weight: 300;
+            color: var(--accent);
+            opacity: 0;
+            line-height: 1;
+        }
+        .pre-wipe {
+            position: absolute; inset: 0;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        /* ─────────────────────────────────────────
+           NAVIGATION
+        ───────────────────────────────────────── */
+        #nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1.6rem 3rem;
+            display: flex; align-items: center; justify-content: space-between;
+            transform: translateY(-100%);
+            transition: background .4s ease, backdrop-filter .4s ease, border-color .4s ease;
+        }
+        #nav.scrolled {
+            background: rgba(10,10,11,.88);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem; font-weight: 800;
+            letter-spacing: .08em; color: var(--txt);
+            text-decoration: none; text-transform: uppercase;
+        }
+        .nav-logo em { color: var(--accent-hi); font-style: normal; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a {
+            font-size: .7rem; font-weight: 500;
+            letter-spacing: .18em; text-transform: uppercase;
+            color: var(--txt-2); text-decoration: none;
+            position: relative; transition: color .3s;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -3px; left: 0;
+            width: 0; height: 1px;
+            background: var(--accent-hi);
+            transition: width .3s ease;
+        }
+        .nav-links a:hover { color: var(--txt); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            font-family: 'Inter', sans-serif;
+            font-size: .65rem; font-weight: 600;
+            letter-spacing: .18em; text-transform: uppercase;
+            color: var(--txt); text-decoration: none;
+            border: 1px solid var(--border);
+            padding: .65rem 1.6rem;
+            position: relative; overflow: hidden;
+            transition: border-color .3s;
+        }
+        .nav-cta::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--accent);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .35s cubic-bezier(.7,0,.3,1);
+        }
+        .nav-cta:hover { border-color: var(--accent); }
+        .nav-cta:hover::before { transform: scaleX(1); }
+        .nav-cta span { position: relative; z-index: 1; }
+
+        /* Mobile Menu */
+        .nav-hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            background: none; border: none; padding: .5rem;
+        }
+        .nav-hamburger span {
+            display: block; width: 24px; height: 1px;
+            background: var(--txt-2); transition: all .3s ease;
+        }
+        #mobile-menu {
+            position: fixed; inset: 0; z-index: 999;
+            background: var(--bg);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 2rem;
+            transform: translateX(100%);
+            transition: transform .5s cubic-bezier(.7,0,.3,1);
+        }
+        #mobile-menu.open { transform: translateX(0); }
+        #mobile-menu a {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 800; text-transform: uppercase;
+            color: var(--txt); text-decoration: none;
+            transition: color .3s;
+        }
+        #mobile-menu a:hover { color: var(--accent-hi); }
+
+        /* ─────────────────────────────────────────
+           HERO
+        ───────────────────────────────────────── */
+        #hero {
+            min-height: 100vh;
+            display: flex; align-items: center;
+            padding: 0 3rem;
+            position: relative; overflow: hidden;
+        }
+        .hero-grid-bg {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(24,24,28,.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(24,24,28,.5) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+        }
+        .hero-orb {
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(142,16,17,.18) 0%, transparent 70%);
+            border-radius: 50%;
+            right: -80px; top: 50%;
+            transform: translateY(-50%);
+            filter: blur(80px);
+            pointer-events: none;
+            will-change: transform;
+        }
+        .hero-orb-2 {
+            position: absolute;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(196,30,58,.08) 0%, transparent 70%);
+            border-radius: 50%;
+            left: 10%; bottom: 10%;
+            filter: blur(60px);
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative; z-index: 1;
+            max-width: 1400px; margin: 0 auto; width: 100%;
+            padding-top: 7rem;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: .9rem;
+            font-size: .65rem; font-weight: 600;
+            letter-spacing: .32em; text-transform: uppercase;
+            color: var(--accent-hi);
+            margin-bottom: 2rem;
+            opacity: 0;
+        }
+        .hero-badge::before {
+            content: ''; width: 36px; height: 1px;
+            background: var(--accent-hi);
+        }
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3.5rem, 11vw, 9.5rem);
+            font-weight: 800; line-height: .88;
+            letter-spacing: -.025em; text-transform: uppercase;
+            color: var(--txt);
+        }
+        .title-line { overflow: hidden; display: block; }
+        .title-line-inner { display: block; transform: translateY(110%); }
+        .title-outline {
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(240,237,232,.15);
+        }
+        .hero-sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic; font-weight: 300;
+            font-size: clamp(1.1rem, 2.5vw, 1.9rem);
+            color: var(--accent-hi);
+            margin-top: .8rem; opacity: 0;
+        }
+        .hero-desc {
+            font-size: clamp(.88rem, 1.2vw, 1rem);
+            line-height: 1.8; color: var(--txt-2);
+            max-width: 500px; margin-top: 2rem; opacity: 0;
+        }
+        .hero-actions {
+            display: flex; align-items: center; gap: 1.8rem;
+            margin-top: 3rem; opacity: 0;
+        }
+        .btn-fill {
+            font-family: 'Inter', sans-serif;
+            font-size: .7rem; font-weight: 600;
+            letter-spacing: .16em; text-transform: uppercase;
+            color: var(--txt); text-decoration: none;
+            background: var(--accent);
+            padding: 1.1rem 2.8rem;
+            position: relative; overflow: hidden;
+            display: inline-block;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+            transition: transform .3s ease;
+        }
+        .btn-fill::after {
+            content: ''; position: absolute; inset: 0;
+            background: var(--accent-hi);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .45s cubic-bezier(.7,0,.3,1);
+        }
+        .btn-fill:hover::after { transform: scaleX(1); }
+        .btn-fill span { position: relative; z-index: 1; }
+        .btn-ghost {
+            font-family: 'Inter', sans-serif;
+            font-size: .7rem; font-weight: 500;
+            letter-spacing: .16em; text-transform: uppercase;
+            color: var(--txt-2); text-decoration: none;
+            display: inline-flex; align-items: center; gap: .7rem;
+            transition: color .3s;
+        }
+        .btn-ghost .arrow { transition: transform .3s; }
+        .btn-ghost:hover { color: var(--txt); }
+        .btn-ghost:hover .arrow { transform: translateX(5px); }
+        .hero-stats {
+            display: flex; gap: 4rem;
+            margin-top: 5rem; padding-top: 2.5rem;
+            border-top: 1px solid var(--border);
+            opacity: 0;
+        }
+        .stat-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.4rem; font-weight: 800;
+            color: var(--txt); line-height: 1;
+        }
+        .stat-val em { color: var(--accent-hi); font-style: normal; }
+        .stat-lbl {
+            font-size: .65rem; font-weight: 500;
+            letter-spacing: .22em; text-transform: uppercase;
+            color: var(--txt-2); margin-top: .4rem;
+        }
+        .hero-scroll {
+            position: absolute; right: 3rem; bottom: 2.5rem;
+            display: flex; flex-direction: column; align-items: center; gap: .6rem;
+            z-index: 1;
+        }
+        .scroll-lbl {
+            font-size: .55rem; letter-spacing: .35em; text-transform: uppercase;
+            color: var(--txt-muted); writing-mode: vertical-rl;
+        }
+        .scroll-bar {
+            width: 1px; height: 64px;
+            background: linear-gradient(to bottom, var(--accent-hi), transparent);
+            animation: scrollAnim 1.8s ease-in-out infinite;
+        }
+        @keyframes scrollAnim {
+            0%   { opacity:0; transform: scaleY(0); transform-origin: top; }
+            50%  { opacity:1; }
+            100% { opacity:0; transform: scaleY(1); transform-origin: bottom; }
+        }
+
+        /* ─────────────────────────────────────────
+           MARQUEE TICKER
+        ───────────────────────────────────────── */
+        .marquee-wrap {
+            overflow: hidden;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-2);
+            padding: 1.4rem 0;
+        }
+        .marquee-track {
+            display: flex; gap: 2.5rem;
+            white-space: nowrap;
+            will-change: transform;
+        }
+        .marquee-item {
+            display: inline-flex; align-items: center; gap: 1.5rem;
+            font-family: 'Syne', sans-serif;
+            font-size: .88rem; font-weight: 700;
+            letter-spacing: .12em; text-transform: uppercase;
+            color: var(--txt-muted);
+            flex-shrink: 0;
+            transition: color .3s;
+        }
+        .marquee-item:hover { color: var(--txt-2); }
+        .marquee-dot { color: var(--accent-hi); font-size: .45rem; }
+
+        /* ─────────────────────────────────────────
+           SECTION COMMONS
+        ───────────────────────────────────────── */
+        .section { padding: 9rem 3rem; position: relative; }
+        .s-inner  { max-width: 1400px; margin: 0 auto; }
+        .s-label {
+            display: inline-flex; align-items: center; gap: .9rem;
+            font-size: .62rem; font-weight: 600;
+            letter-spacing: .35em; text-transform: uppercase;
+            color: var(--accent-hi); margin-bottom: 1.4rem;
+        }
+        .s-label::before {
+            content: ''; width: 28px; height: 1px; background: var(--accent-hi);
+        }
+        .s-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.4rem, 6vw, 5.5rem);
+            font-weight: 800; line-height: .94;
+            letter-spacing: -.025em; text-transform: uppercase;
+            color: var(--txt);
+        }
+        .s-title .dim {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(240,237,232,.15);
+        }
+        .reveal-up {
+            overflow: hidden;
+        }
+        .reveal-up-inner {
+            display: block;
+            transform: translateY(80px);
+            opacity: 0;
+        }
+
+        /* ─────────────────────────────────────────
+           ABOUT
+        ───────────────────────────────────────── */
+        #about { background: var(--bg-2); }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 6rem; margin-top: 5rem; align-items: start;
+        }
+        .about-body {
+            font-size: 1.05rem; line-height: 1.85;
+            color: var(--txt-2);
+        }
+        .about-body + .about-body { margin-top: 1.2rem; }
+        .about-body strong { color: var(--txt); font-weight: 500; }
+        .about-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.3rem, 2.5vw, 2rem);
+            font-style: italic; font-weight: 300;
+            color: var(--txt); line-height: 1.4;
+            margin-top: 3rem; padding-left: 1.8rem;
+            border-left: 2px solid var(--accent);
+        }
+        .info-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+        .info-card {
+            background: var(--bg-card);
+            padding: 1.6rem 2rem;
+            position: relative; overflow: hidden;
+            transition: background .3s;
+        }
+        .info-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 1.5px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .4s ease;
+        }
+        .info-card:hover::before { transform: scaleX(1); }
+        .info-card:hover { background: rgba(16,16,19,1); }
+        .info-lbl {
+            font-size: .58rem; font-weight: 600;
+            letter-spacing: .28em; text-transform: uppercase;
+            color: var(--accent-hi); margin-bottom: .4rem;
+        }
+        .info-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem; font-weight: 600; color: var(--txt);
+        }
+
+        /* ─────────────────────────────────────────
+           SKILLS
+        ───────────────────────────────────────── */
+        #skills { background: var(--bg); }
+        .skills-header {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 4rem; align-items: end; margin-bottom: 5rem;
+        }
+        .skills-desc {
+            font-size: .98rem; line-height: 1.85; color: var(--txt-2);
+            padding-top: 1.5rem;
+        }
+        .skills-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1.5px; background: var(--border);
+        }
+        .skill-card {
+            background: var(--bg-card);
+            padding: 3rem 2.5rem 2.5rem;
+            position: relative; overflow: hidden;
+            transform-style: preserve-3d;
+            transition: background .4s;
+        }
+        .skill-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(142,16,17,.07) 0%, transparent 55%);
+            opacity: 0; transition: opacity .4s;
+        }
+        .skill-card:hover::before { opacity: 1; }
+        .skill-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: .88rem; font-style: italic;
+            color: var(--txt-muted); margin-bottom: 2rem;
+        }
+        .skill-icon {
+            font-size: 2.2rem; display: block; margin-bottom: 1.4rem;
+            transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+        }
+        .skill-card:hover .skill-icon { transform: scale(1.15) translateY(-3px); }
+        .skill-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem; font-weight: 700; color: var(--txt);
+            line-height: 1.2; margin-bottom: .9rem;
+        }
+        .skill-desc {
+            font-size: .82rem; line-height: 1.75; color: var(--txt-2);
+        }
+        .skill-chips {
+            display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.6rem;
+        }
+        .chip {
+            font-size: .58rem; font-weight: 600;
+            letter-spacing: .14em; text-transform: uppercase;
+            color: var(--txt-muted); border: 1px solid var(--border);
+            padding: .3rem .75rem;
+            transition: border-color .3s, color .3s;
+        }
+        .skill-card:hover .chip {
+            border-color: var(--border-hi); color: var(--txt-2);
+        }
+        .skill-bar {
+            position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+            transition: width .6s cubic-bezier(.7,0,.3,1);
+        }
+        .skill-card:hover .skill-bar { width: 100%; }
+
+        /* ─────────────────────────────────────────
+           EXPERIENCE
+        ───────────────────────────────────────── */
+        #experience { background: var(--bg-2); min-height: 100vh; }
+        .exp-layout {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 7rem; margin-top: 5rem;
+        }
+        .exp-sticky {
+            position: sticky;
+            top: calc(50vh - 220px);
+            align-self: start; height: fit-content;
+        }
+        .exp-big-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(5rem, 10vw, 8rem);
+            font-style: italic; font-weight: 300;
+            color: var(--accent); opacity: .12; line-height: 1;
+        }
+        .exp-current-role {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800; color: var(--txt); line-height: 1.1;
+            margin-top: -1.5rem;
+        }
+        .exp-current-co {
+            font-size: .72rem; font-weight: 600;
+            letter-spacing: .2em; text-transform: uppercase;
+            color: var(--accent-hi); margin-top: 1rem;
+        }
+        .exp-current-desc {
+            font-size: .92rem; line-height: 1.82; color: var(--txt-2);
+            margin-top: 1.5rem;
+        }
+        .exp-current-tags {
+            display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2rem;
+        }
+        .exp-tag {
+            font-size: .6rem; font-weight: 600;
+            letter-spacing: .14em; text-transform: uppercase;
+            color: var(--accent-hi); background: rgba(142,16,17,.12);
+            border: 1px solid var(--border-hi); padding: .35rem .85rem;
+        }
+        .timeline { display: flex; flex-direction: column; }
+        .tl-item {
+            padding: 2.8rem 0 2.8rem 2.5rem;
+            border-top: 1px solid var(--border);
+            position: relative;
+            cursor: pointer;
+            transition: padding .3s ease;
+        }
+        .tl-item:last-child { border-bottom: 1px solid var(--border); }
+        .tl-dot {
+            position: absolute; left: 0; top: 3.5rem;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--txt-muted);
+            transition: background .35s, box-shadow .35s, transform .35s;
+        }
+        .tl-item.active .tl-dot {
+            background: var(--accent-hi);
+            box-shadow: 0 0 18px rgba(196,30,58,.5);
+            transform: scale(1.3);
+        }
+        .tl-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: .6rem;
+        }
+        .tl-role {
+            font-size: .62rem; font-weight: 600;
+            letter-spacing: .2em; text-transform: uppercase; color: var(--accent-hi);
+        }
+        .tl-date { font-size: .62rem; color: var(--txt-muted); letter-spacing: .08em; }
+        .tl-company {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem; font-weight: 700;
+            color: var(--txt-muted); line-height: 1.2;
+            transition: color .35s;
+        }
+        .tl-item.active .tl-company { color: var(--txt); }
+        .tl-location {
+            font-size: .8rem; color: var(--txt-muted); margin-top: .4rem;
+        }
+        .tl-detail {
+            font-size: .88rem; line-height: 1.75; color: var(--txt-2);
+            margin-top: 1rem; max-height: 0; overflow: hidden;
+            transition: max-height .45s cubic-bezier(.7,0,.3,1), opacity .35s;
+            opacity: 0;
+        }
+        .tl-item.active .tl-detail { max-height: 200px; opacity: 1; }
+        .tl-line {
+            position: absolute; left: 0; top: 0; bottom: 0;
+            width: 1.5px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            transform: scaleY(0); transform-origin: top;
+            transition: transform .5s cubic-bezier(.7,0,.3,1);
+        }
+        .tl-item.active .tl-line { transform: scaleY(1); }
+
+        /* ─────────────────────────────────────────
+           CONTACT / FOOTER
+        ───────────────────────────────────────── */
+        #contact {
+            background: var(--bg);
+            padding: 9rem 3rem 4rem;
+            position: relative; overflow: hidden;
+        }
+        .contact-bg-word {
+            position: absolute; bottom: -2rem; left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(8rem, 22vw, 20rem);
+            font-weight: 800; text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,.025);
+            white-space: nowrap; pointer-events: none; user-select: none;
+            line-height: .85;
+        }
+        .contact-inner { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+        .contact-headline {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 9vw, 8.5rem);
+            font-weight: 800; line-height: .94;
+            letter-spacing: -.025em; text-transform: uppercase;
+            color: var(--txt); max-width: 960px;
+        }
+        .contact-headline .dim {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(240,237,232,.2);
+        }
+        .txt-reveal { overflow: hidden; }
+        .txt-reveal-inner { display: block; transform: translateY(105%); }
+        .contact-rule {
+            width: 100%; height: 1px; background: var(--border);
+            margin: 4.5rem 0;
+        }
+        .contact-row {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+        }
+        .contact-links { display: flex; gap: 4rem; flex-wrap: wrap; }
+        .c-lbl {
+            font-size: .58rem; font-weight: 600;
+            letter-spacing: .3em; text-transform: uppercase;
+            color: var(--txt-muted); margin-bottom: .5rem;
+        }
+        .c-val {
+            font-size: .95rem; color: var(--txt);
+            text-decoration: none; transition: color .3s;
+        }
+        .c-val:hover { color: var(--accent-hi); }
+        .footer-bottom {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: 3rem; margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap; gap: 1.5rem;
+        }
+        .footer-copy {
+            font-size: .7rem; color: var(--txt-muted); letter-spacing: .1em;
+        }
+        .footer-nav { display: flex; gap: 2rem; }
+        .footer-nav a {
+            font-size: .65rem; font-weight: 500;
+            letter-spacing: .18em; text-transform: uppercase;
+            color: var(--txt-muted); text-decoration: none; transition: color .3s;
+        }
+        .footer-nav a:hover { color: var(--txt); }
+
+        /* ─────────────────────────────────────────
+           MAGNETIC WRAPPER
+        ───────────────────────────────────────── */
+        .mag-wrap { display: inline-block; position: relative; }
+
+        /* ─────────────────────────────────────────
+           RESPONSIVE
+        ───────────────────────────────────────── */
+        @media (max-width: 1024px) {
+            .about-grid         { grid-template-columns: 1fr; gap: 3.5rem; }
+            .skills-grid        { grid-template-columns: 1fr 1fr; }
+            .skills-header      { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+            .exp-layout         { grid-template-columns: 1fr; gap: 3rem; }
+            .exp-sticky         { position: relative; top: auto; }
+            .contact-row        { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 768px) {
+            #nav { padding: 1.2rem 1.5rem; }
+            .nav-links, .nav-cta { display: none; }
+            .nav-hamburger { display: flex; }
+            .section   { padding: 6rem 1.5rem; }
+            #hero      { padding: 0 1.5rem; }
+            #contact   { padding: 6rem 1.5rem 3rem; }
+            .hero-stats { flex-wrap: wrap; gap: 2rem; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .contact-links { flex-direction: column; gap: 2rem; }
+            .hero-scroll { display: none; }
+        }
+        @media (max-width: 480px) {
+            .hero-actions { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- CUSTOM CURSOR -->
+<div class="c-outer" id="cOuter"></div>
+<div class="c-inner" id="cInner"></div>
+
+<!-- ─── PRELOADER ──────────────────────────── -->
+<div id="preloader">
+    <div class="pre-wipe" id="preWipe"></div>
+    <div style="text-align:center; position:relative; z-index:1;">
+        <div class="pre-label" id="preLabel">SEO Strategist</div>
+        <div class="pre-line" id="preLine"></div>
+        <div class="pre-name"><span class="pre-name-inner" id="preName1">Seetha</span></div>
+        <div class="pre-name"><span class="pre-name-inner" id="preName2">Lakshmi<span style="color:var(--accent-hi)">.</span>M</span></div>
+        <div class="pre-count" id="preCount">SEO</div>
+    </div>
+</div>
+
+<!-- ─── MOBILE MENU ───────────────────────── -->
+<div id="mobile-menu">
+    <a href="#about"      class="mob-link">About</a>
+    <a href="#skills"     class="mob-link">Expertise</a>
+    <a href="#experience" class="mob-link">Experience</a>
+    <a href="#contact"    class="mob-link">Contact</a>
+</div>
+
+<!-- ─── NAVIGATION ───────────────────────── -->
+<nav id="nav">
+    <a href="#" class="nav-logo">SL<em>.</em>M</a>
+    <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Expertise</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="mailto:seethalakshmim2003@gmail.com" class="nav-cta mag-btn">
+        <span>Get In Touch</span>
+    </a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span id="hb1"></span>
+        <span id="hb2"></span>
+        <span id="hb3"></span>
+    </button>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────── -->
+<section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-orb" id="heroOrb"></div>
+    <div class="hero-orb-2"></div>
+
+    <div class="hero-content">
+
+        <div class="hero-badge" id="heroBadge">
+            Dynamic SEO Strategist &amp; Digital Growth Expert
+        </div>
+
+        <h1 class="hero-title">
+            <span class="title-line"><span class="title-line-inner" id="hLine1">Seetha</span></span>
+            <span class="title-line"><span class="title-line-inner" id="hLine2">Lakshmi<span class="title-outline">.M</span></span></span>
+        </h1>
+
+        <div class="hero-sub" id="heroSub">
+            Architect of Organic Growth &amp; Search Dominance
+        </div>
+
+        <p class="hero-desc" id="heroDesc">
+            Driving measurable organic results through advanced Technical SEO,
+            Content Strategy, and Answer Engine Optimization — turning search
+            algorithms into unstoppable business growth engines.
+        </p>
+
+        <div class="hero-actions" id="heroActions">
+            <div class="mag-wrap">
+                <a href="#experience" class="btn-fill mag-btn">
+                    <span>Explore My Work</span>
+                </a>
+            </div>
+            <a href="#contact" class="btn-ghost">
+                Start a Project <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <div class="hero-stats" id="heroStats">
+            <div>
+                <div class="stat-val">1<em>.</em>5<em>+</em></div>
+                <div class="stat-lbl">Years Experience</div>
+            </div>
+            <div>
+                <div class="stat-val">2<em>+</em></div>
+                <div class="stat-lbl">Companies</div>
+            </div>
+            <div>
+                <div class="stat-val">UAE<em>&</em></div>
+                <div class="stat-lbl">Int'l Markets</div>
+            </div>
+            <div>
+                <div class="stat-val">Top<em>3</em></div>
+                <div class="stat-lbl">SERP Rankings</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-scroll">
+        <span class="scroll-lbl">Scroll</span>
+        <div class="scroll-bar"></div>
+    </div>
+</section>
+
+<!-- ─── MARQUEE ───────────────────────────── -->
+<div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+        <span class="marquee-item">Technical SEO <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Content Strategy <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Answer Engine Optimization <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Local &amp; International SEO <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">SEMrush · Ahrefs · GSC <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Screaming Frog Audits <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Social Media Marketing <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">UAE &amp; Regional Markets <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Core Web Vitals <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Schema Markup <span class="marquee-dot">✦</span></span>
+        <!-- duplicate for seamless loop -->
+        <span class="marquee-item">Technical SEO <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Content Strategy <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Answer Engine Optimization <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Local &amp; International SEO <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">SEMrush · Ahrefs · GSC <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Screaming Frog Audits <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Social Media Marketing <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">UAE &amp; Regional Markets <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Core Web Vitals <span class="marquee-dot">✦</span></span>
+        <span class="marquee-item">Schema Markup <span class="marquee-dot">✦</span></span>
+    </div>
+</div>
+
+<!-- ─── ABOUT ─────────────────────────────── -->
+<section id="about" class="section">
+    <div class="s-inner">
+
+        <div class="reveal-up"><span class="s-label reveal-up-inner">About Me</span></div>
+
+        <div class="s-title" style="margin-bottom:.5rem;">
+            <div class="reveal-up"><span class="reveal-up-inner">The Strategist</span></div>
+            <div class="reveal-up"><span class="reveal-up-inner dim">Behind Rankings</span></div>
+        </div>
+
+        <div class="about-grid">
+            <div>
+                <p class="about-body reveal-up" style="opacity:0; transform:translateY(40px);">
+                    I'm <strong>Seetha Lakshmi.M</strong>, an SEO Strategist with
+                    <strong>1.5+ years</strong> of hands-on experience transforming
+                    digital visibility into tangible business outcomes. My expertise spans
+                    the full SEO spectrum — from granular <strong>technical audits</strong>
+                    to high-level <strong>content architecture</strong> and campaign planning.
+                </p>
+                <p class="about-body reveal-up" style="opacity:0; transform:translateY(40px); margin-top:1.2rem;">
+                    Having worked with <strong>international clients in the UAE</strong>
+                    and regional markets, I bring a global perspective to every campaign.
+                    I understand that search intent varies across cultures and geographies,
+                    crafting strategies that resonate locally while competing at a global scale.
+                </p>
+                <blockquote class="about-quote reveal-up" style="opacity:0; transform:translateY(40px);">
+                    "I don't just optimize for algorithms — I architect digital
+                    experiences that humans discover first and search engines reward always."
+                </blockquote>
+            </div>
+            <div class="info-cards">
+                <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
+                    <div class="info-lbl">Location</div>
+                    <div class="info-val">Pattambi, Palakkad, Kerala</div>
+                </div>
+                <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
+                    <div class="info-lbl">Core Specialization</div>
+                    <div class="info-val">Technical SEO · AEO · Local SEO</div>
+                </div>
+                <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
+                    <div class="info-lbl">Experience</div>
+                    <div class="info-val">1.5+ Years — Agency &amp; In-House</div>
+                </div>
+                <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
+                    <div class="info-lbl">Markets Served</div>
+                    <div class="info-val">UAE (Dubai) · Kerala, India</div>
+                </div>
+                <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
+                    <div class="info-lbl">Tool Stack</div>
+                    <div class="info-val">SEMrush · Ahrefs · GSC · GA4 · Screaming Frog</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── SKILLS ────────────────────────────── -->
+<section id="skills" class="section">
+    <div class="s-inner">
+        <div class="skills-header">
+            <div>
+                <div class="reveal-up"><span class="s-label reveal-up-inner">Core Expertise</span></div>
+                <div class="s-title">
+                    <div class="reveal-up"><span class="reveal-up-inner">My</span></div>
+                    <div class="reveal-up"><span class="reveal-up-inner">Arsenal</span></div>
+                </div>
+            </div>
+            <p class="skills-desc reveal-up" style="opacity:0; transform:translateY(40px);">
+                A precision-built toolkit refined through real-world campaigns across
+                competitive markets. Every skill here has been battle-tested — no
+                theoretical frameworks, only proven execution and measurable results.
+            </p>
+        </div>
+
+        <div class="skills-grid" id="skillsGrid">
+
+            <div class="skill-card" data-tilt>
+                <div class="skill-num">01</div>
+                <span class="skill-icon">⚡</span>
+                <h3 class="skill-name">SEO Strategy &amp; Copywriting</h3>
+                <p class="skill-desc">Data-driven strategies aligned with user intent and search algorithms. From comprehensive keyword research to compelling on-page copy that ranks and converts simultaneously.</p>
+                <div class="skill-chips">
+                    <span class="chip">Keyword Research</span>
+                    <span class="chip">On-Page SEO</span>
+                    <span class="chip">Content Architecture</span>
+                    <span class="chip">E-E-A-T</span>
+                    <span class="chip">Topical Authority</span>
+                </div>
+                <div class="skill-bar"></div>
+            </div>
+
+            <div class="skill-card" data-tilt>
+                <div class="skill-num">02</div>
+                <span class="skill-icon">🔬</span>
+                <h3 class="skill-name">Analytics &amp; Technical Auditing</h3>
+                <p class="skill-desc">Deep technical expertise in diagnosing site health issues, crawl inefficiencies, and performance bottlenecks. Turning complex data into clear, prioritized action roadmaps.</p>
+                <div class="skill-chips">
+                    <span class="chip">Google Analytics</span>
+                    <span class="chip">Search Console</span>
+                    <span class="chip">SEMrush</span>
+                    <span class="chip">Ahrefs</span>
+                    <span class="chip">Screaming Frog</span>
+                </div>
+                <div class="skill-bar"></div>
+            </div>
+
+            <div class="skill-card" data-tilt>
+                <div class="skill-num">03</div>
+                <span class="skill-icon">📡</span>
+                <h3 class="skill-name">Social Media &amp; Campaign Planning</h3>
+                <p class="skill-desc">Integrated digital marketing that amplifies organic reach. Building brand authority through strategic social signals and multi-channel content distribution that reinforces SEO goals.</p>
+                <div class="skill-chips">
+                    <span class="chip">Campaign Strategy</span>
+                    <span class="chip">Content Planning</span>
+                    <span class="chip">Brand Authority</span>
+                    <span class="chip">Social Signals</span>
+                </div>
+                <div class="skill-bar"></div>
+            </div>
+
+            <div class="skill-card" data-tilt>
+                <div class="skill-num">04</div>
+                <span class="skill-icon">🌐</span>
+                <h3 class="skill-name">Local &amp; International SEO</h3>
+                <p class="skill-desc">Specialized in geo-targeted campaigns for UAE and South Asian markets. Multilingual SEO considerations, hreflang implementation, and regional SERP domination strategies.</p>
+                <div class="skill-chips">
+                    <span class="chip">Local SEO</span>
+                    <span class="chip">GMB Optimization</span>
+                    <span class="chip">Hreflang</span>
+                    <span class="chip">UAE Market</span>
+                    <span class="chip">Citations</span>
+                </div>
+                <div class="skill-bar"></div>
+            </div>
+
+            <div class="skill-card" data-tilt>
+                <div class="skill-num">05</div>
+                <span class="skill-icon">🤖</span>
+                <h3 class="skill-name">Answer Engine Optimization</h3>
+                <p class="skill-desc">Pioneering the next frontier of search — optimizing for AI-powered results, featured snippets, People Also Ask boxes, and voice search to capture the zero-click SERP landscape.</p>
+                <div class="skill-chips">
+                    <span class="chip">Featured Snippets</span>
+                    <span class="chip">Schema Markup</span>
+                    <span class="chip">Voice Search</span>
+                    <span class="chip">AI Overviews</span>
+                </div>
+                <div class="skill-bar"></div>
+            </div>
+
+            <div class="skill-card" data-tilt>
+                <div class="skill-num">06</div>
+                <span class="skill-icon">🔗</span>
+                <h3 class="skill-name">Link Building &amp; Authority</h3>
+                <p class="skill-desc">Strategic off-page SEO through white-hat link acquisition, digital PR, and domain authority building that creates sustainable ranking momentum resistant to algorithm shifts.</p>
+                <div class="skill-chips">
+                    <span class="chip">Backlink Analysis</span>
+                    <span class="chip">Digital PR</span>
+                    <span class="chip">Guest Posting</span>
+                    <span class="chip">Domain Authority</span>
+                </div>
+                <div class="skill-bar"></div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ─── EXPERIENCE ────────────────────────── -->
+<section id="experience" class="section">
+    <div class="s-inner">
+        <div class="reveal-up"><span class="s-label reveal-up-inner">Work History</span></div>
+        <div class="s-title">
+            <div class="reveal-up"><span class="reveal-up-inner">Experience</span></div>
+            <div class="reveal-up"><span class="reveal-up-inner dim">Timeline</span></div>
+        </div>
+
+        <div class="exp-layout">
+
+            <!-- Sticky preview panel -->
+            <div class="exp-sticky">
+                <div class="exp-big-num" id="expNum">01</div>
+                <div class="exp-current-role" id="expRole">SEO Analyst</div>
+                <div class="exp-current-co" id="expCo">Digitz Technologies · Dubai / Calicut</div>
+                <p class="exp-current-desc" id="expDesc">Led technical SEO for a diverse portfolio of UAE-based clients. Specialized in Arabic market localization, Google Business Profile optimization, and comprehensive site audits that drove measurable SERP improvements across competitive verticals.</p>
+                <div class="exp-current-tags" id="expTags">
+                    <span class="exp-tag">Technical SEO</span>
+                    <span class="exp-tag">Local SEO</span>
+                    <span class="exp-tag">UAE Market</span>
+                    <span class="exp-tag">Site Audits</span>
+                </div>
+            </div>
+
+            <!-- Timeline items -->
+            <div class="timeline" id="timeline">
+
+                <div class="tl-item active"
+                     data-num="01"
+                     data-role="SEO Analyst"
+                     data-co="Digitz Technologies · Dubai / Calicut"
+                     data-desc="Led technical SEO for a diverse portfolio of UAE-based clients. Specialized in Arabic market localization, Google Business Profile optimization, and comprehensive site audits that drove measurable SERP improvements across competitive verticals."
+                     data-tags="Technical SEO,Local SEO,UAE Market,Site Audits">
+                    <div class="tl-line"></div>
+                    <div class="tl-dot"></div>
+                    <div class="tl-header">
+                        <div class="tl-role">SEO Analyst</div>
+                        <div class="tl-date">2023 — 2024</div>
+                    </div>
+                    <div class="tl-company">Digitz Technologies</div>
+                    <div class="tl-location">Dubai HQ · Calicut Operations · International Clients</div>
+                    <div class="tl-detail">
+                        Managed technical SEO for UAE-market clients. Performed in-depth site audits, implemented structured data, optimized Core Web Vitals, and developed regionally-attuned content strategies. Achieved consistent top-3 ranking improvements across competitive niches.
+                    </div>
+                </div>
+
+                <div class="tl-item"
+                     data-num="02"
+                     data-role="SEO Executive"
+                     data-co="Iberr Technologies · Kerala, India"
+                     data-desc="Built comprehensive SEO frameworks for local and regional businesses. Executed full-cycle campaigns encompassing technical audits, content creation, local citation building, and performance analytics — consistently delivering top-3 Google rankings for target keywords."
+                     data-tags="Content SEO,Local Campaigns,AEO,Analytics">
+                    <div class="tl-line"></div>
+                    <div class="tl-dot"></div>
+                    <div class="tl-header">
+                        <div class="tl-role">SEO Executive</div>
+                        <div class="tl-date">2024 — Present</div>
+                    </div>
+                    <div class="tl-company">Iberr Technologies</div>
+                    <div class="tl-location">Kerala, India · Regional Market Focus</div>
+                    <div class="tl-detail">
+                        Spearheading SEO operations for regional brands. Developed content-driven SEO strategies, managed local SEO campaigns, and implemented AEO best practices. Delivering consistent ranking improvements and organic traffic growth through data-backed, iterative optimization.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── CONTACT ───────────────────────────── -->
+<section id="contact">
+    <div class="contact-bg-word">SEO</div>
+
+    <div class="contact-inner">
+        <div class="reveal-up" style="margin-bottom:2.5rem;">
+            <span class="s-label reveal-up-inner">Let's Collaborate</span>
+        </div>
+
+        <h2 class="contact-headline">
+            <div class="txt-reveal"><span class="txt-reveal-inner">Let's Elevate</span></div>
+            <div class="txt-reveal"><span class="txt-reveal-inner dim">Your Search</span></div>
+            <div class="txt-reveal"><span class="txt-reveal-inner">Rankings.</span></div>
+        </h2>
+
+        <div class="contact-rule"></div>
+
+        <div class="contact-row">
+            <div class="contact-links">
+                <div>
+                    <div class="c-lbl">Email</div>
+                    <a href="mailto:seethalakshmim2003@gmail.com" class="c-val">
+                        seethalakshmim2003@gmail.com
+                    </a>
+                </div>
+                <div>
+                    <div class="c-lbl">Phone</div>
+                    <a href="tel:+917994952240" class="c-val">+91 7994 952240</a>
+                </div>
+                <div>
+                    <div class="c-lbl">Location</div>
+                    <span class="c-val">Pattambi, Kerala</span>
+                </div>
+            </div>
+            <div class="mag-wrap">
+                <a href="mailto:seethalakshmim2003@gmail.com"
+                   class="btn-fill mag-btn"
+                   style="padding:1.25rem 3.2rem; font-size:.72rem;">
+                    <span>Start a Conversation →</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-copy">© 2025 Seetha Lakshmi.M — All Rights Reserved</div>
+            <nav class="footer-nav">
+                <a href="#hero">Home</a>
+                <a href="#about">About</a>
+                <a href="#skills">Expertise</a>
+                <a href="#experience">Experience</a>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────────────────────────────────
+     JAVASCRIPT
+───────────────────────────────────────── -->
+<script>
+/* ── Tailwind config ── */
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                bg: '#0A0A0B',
+                accent: '#8E1011',
+                'accent-hi': '#C41E3A',
+            }
+        }
+    }
+};
+
+/* ─────────────────────────────────────────
+   GSAP PLUGINS
+───────────────────────────────────────── */
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+/* ─────────────────────────────────────────
+   LENIS SMOOTH SCROLL
+───────────────────────────────────────── */
+const lenis = new Lenis({
+    duration: 1.35,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothTouch: false,
+});
+
+gsap.ticker.add(time => lenis.raf(time * 1000));
+gsap.ticker.lagSmoothing(0);
+lenis.on('scroll', ScrollTrigger.update);
+
+/* ─────────────────────────────────────────
+   SCROLL PROGRESS BAR
+───────────────────────────────────────── */
+gsap.to('#scroll-progress', {
+    scaleX: 1,
+    ease: 'none',
+    scrollTrigger: {
+        trigger: 'body',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0,
+    }
+});
+
+/* ─────────────────────────────────────────
+   CUSTOM CURSOR
+───────────────────────────────────────── */
+const cOuter = document.getElementById('cOuter');
+const cInner = document.getElementById('cInner');
+let mx = 0, my = 0, ox = 0, oy = 0;
+
+document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    gsap.to(cInner, { x: mx, y: my, duration: .06, overwrite: true });
+});
+
+(function tickOuter() {
+    ox += (mx - ox) * .11;
+    oy += (my - oy) * .11;
+    gsap.set(cOuter, { x: ox, y: oy });
+    requestAnimationFrame(tickOuter);
+})();
+
+document.querySelectorAll('a, button, .skill-card, .info-card, .tl-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cOuter.classList.add('is-hover'));
+    el.addEventListener('mouseleave', () => cOuter.classList.remove('is-hover'));
+});
+document.addEventListener('mousedown', () => cOuter.classList.add('is-click'));
+document.addEventListener('mouseup',   () => cOuter.classList.remove('is-click'));
+
+/* ─────────────────────────────────────────
+   CHAR SPLIT UTILITY
+───────────────────────────────────────── */
+function splitChars(el) {
+    const html = el.innerHTML;
+    let out = '', i = 0;
+    while (i < html.length) {
+        if (html[i] === '<') {
+            let tag = '';
+            while (i < html.length && html[i] !== '>') { tag += html[i++]; }
+            tag += html[i] || '>';
+            out += tag; i++;
+        } else if (html[i] === '&') {
+            let entity = '';
+            while (i < html.length && html[i] !== ';') { entity += html[i++]; }
+            entity += ';'; i++;
+            out += `<span class="ch" style="display:inline-block">${entity}</span>`;
+        } else if (html[i] === ' ') {
+            out += '<span class="ch" style="display:inline-block;min-width:.3em">&nbsp;</span>';
+            i++;
+        } else {
+            out += `<span class="ch" style="display:inline-block">${html[i++]}</span>`;
+        }
+    }
+    el.innerHTML = out;
+    return el.querySelectorAll('.ch');
+}
+
+/* ─────────────────────────────────────────
+   PRELOADER → MAIN BOOT
+───────────────────────────────────────── */
+function bootPreloader() {
+    const tl = gsap.timeline({
+        onComplete: bootSite
+    });
+
+    tl.to('#preLabel', { opacity: 1, y: 0, duration: .6, ease: 'power3.out' })
+      .to('#preLine',  { width: '160px', duration: .7, ease: 'power2.inOut' }, '-=.2')
+      .to('#preName1', { y: '0%', duration: .8, ease: 'power4.out' }, '-=.3')
+      .to('#preName2', { y: '0%', duration: .8, ease: 'power4.out' }, '-=.65')
+      .to('#preCount', { opacity: 1, duration: .4, ease: 'power2.out' }, '-=.2')
+      .to({}, { duration: .5 })
+      .to('#preWipe',  { scaleX: 1, duration: .55, ease: 'power3.inOut', transformOrigin: 'left' })
+      .to('#preWipe',  { scaleX: 0, duration: .55, ease: 'power3.inOut', transformOrigin: 'right' })
+      .to('#preloader', { autoAlpha: 0, duration: .3, onComplete: () => {
+          document.getElementById('preloader').style.display = 'none';
+      }}, '-=.1');
+}
+
+function bootSite() {
+    /* NAV */
+    gsap.to('#nav', { y: 0, duration: 1.1, ease: 'power4.out', delay: .1 });
+
+    /* HERO BADGE */
+    gsap.to('#heroBadge', { opacity: 1, y: 0, duration: .8, ease: 'power3.out', delay: .2 });
+
+    /* HERO TITLE — split chars */
+    const line1 = document.getElementById('hLine1');
+    const line2 = document.getElementById('hLine2');
+    const chars1 = splitChars(line1);
+    const chars2 = splitChars(line2);
+
+    gsap.from(chars1, {
+        y: '110%', opacity: 0, stagger: .035,
+        duration: 1.1, ease: 'power4.out', delay: .25,
+    });
+    gsap.from(chars2, {
+        y: '110%', opacity: 0, stagger: .03,
+        duration: 1.1, ease: 'power4.out', delay: .42,
+    });
+
+    /* Hero sub-elements */
+    gsap.to('#heroSub',     { opacity: 1, y: 0, duration: .8, delay: .75, ease: 'power3.out' });
+    gsap.to('#heroDesc',    { opacity: 1, y: 0, duration: .8, delay: .9,  ease: 'power3.out' });
+    gsap.to('#heroActions', { opacity: 1, y: 0, duration: .8, delay: 1.0, ease: 'power3.out' });
+    gsap.to('#heroStats',   { opacity: 1, y: 0, duration: .8, delay: 1.1, ease: 'power3.out' });
+
+    /* SCROLL REVEALS */
+    initScrollReveals();
+
+    /* MARQUEE */
+    initMarquee();
+
+    /* SKILLS TILT */
+    initSkillsTilt();
+
+    /* TIMELINE */
+    initTimeline();
+
+    /* MAGNETIC BUTTONS */
+    initMagneticButtons();
+
+    /* HERO ORB PARALLAX */
+    gsap.to('#heroOrb', {
+        y: 180,
+        scrollTrigger: {
+            trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5
+        }
+    });
+
+    /* CONTACT BG WORD PARALLAX */
+    gsap.to('.contact-bg-word', {
+        y: -100,
+        scrollTrigger: {
+            trigger: '#contact', start: 'top bottom', end: 'bottom top', scrub: 2
+        }
+    });
+
+    /* NAV GLASS ON SCROLL */
+    ScrollTrigger.create({
+        trigger: '#about', start: 'top 90%',
+        onEnter:     () => document.getElementById('nav').classList.add('scrolled'),
+        onLeaveBack: () => document.getElementById('nav').classList.remove('scrolled'),
+    });
+}
+
+/* ─────────────────────────────────────────
+   SCROLL REVEALS
+───────────────────────────────────────── */
+function initScrollReveals() {
+    /* Generic reveal-up-inner elements */
+    document.querySelectorAll('.reveal-up-inner').forEach(el => {
+        gsap.to(el, {
+            y: 0, opacity: 1, duration: 1, ease: 'power4.out',
+            scrollTrigger: {
+                trigger: el.closest('.reveal-up') || el,
+                start: 'top 88%', toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    /* About body paragraphs */
+    document.querySelectorAll('.about-body, .about-quote, .info-card').forEach((el, i) => {
+        gsap.to(el, {
+            y: 0, opacity: 1, duration: .9, ease: 'power3.out',
+            delay: i * .06,
+            scrollTrigger: {
+                trigger: el, start: 'top 88%', toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    /* Skills grid cards */
+    gsap.from('#skillsGrid .skill-card', {
+        y: 70, opacity: 0, stagger: .09, duration: .9, ease: 'power3.out',
+        scrollTrigger: {
+            trigger: '#skillsGrid', start: 'top 80%', toggleActions: 'play none none none',
+        }
+    });
+
+    /* Skills description */
+    document.querySelectorAll('.skills-desc').forEach(el => {
+        gsap.to(el, {
+            y: 0, opacity: 1, duration: .9, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+        });
+    });
+
+    /* Contact headline txt-reveal */
+    document.querySelectorAll('.txt-reveal-inner').forEach((el, i) => {
+        gsap.to(el, {
+            y: '0%', duration: 1.2, ease: 'power4.out', delay: i * .12,
+            scrollTrigger: {
+                trigger: el.closest('.contact-headline') || el,
+                start: 'top 85%', toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    /* Contact rule width */
+    gsap.from('.contact-rule', {
+        scaleX: 0, transformOrigin: 'left', duration: 1.2, ease: 'power4.inOut',
+        scrollTrigger: {
+            trigger: '.contact-rule', start: 'top 90%', toggleActions: 'play none none none',
+        }
+    });
+
+    /* Contact links */
+    gsap.from('.contact-links > div, .contact-row .mag-wrap', {
+        y: 30, opacity: 0, stagger: .1, duration: .8, ease: 'power3.out',
+        scrollTrigger: {
+            trigger: '.contact-row', start: 'top 88%', toggleActions: 'play none none none',
+        }
+    });
+}
+
+/* ─────────────────────────────────────────
+   MARQUEE
+───────────────────────────────────────── */
+function initMarquee() {
+    const track = document.getElementById('marqueeTrack');
+    const half  = track.scrollWidth / 2;
+    gsap.to(track, {
+        x: -half, duration: 28, ease: 'none', repeat: -1,
+    });
+}
+
+/* ─────────────────────────────────────────
+   SKILLS 3D TILT
+───────────────────────────────────────── */
+function initSkillsTilt() {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const r  = card.getBoundingClientRect();
+            const dx = (e.clientX - r.left - r.width  / 2) / (r.width  / 2);
+            const dy = (e.clientY - r.top  - r.height / 2) / (r.height / 2);
+            gsap.to(card, {
+                rotateX: -dy * 9, rotateY: dx * 9,
+                transformPerspective: 900,
+                duration: .35, ease: 'power2.out', overwrite: true,
+            });
+        });
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                rotateX: 0, rotateY: 0,
+                duration: .7, ease: 'elastic.out(1,.6)', overwrite: true,
+            });
+        });
+    });
+}
+
+/* ─────────────────────────────────────────
+   EXPERIENCE TIMELINE
+───────────────────────────────────────── */
+function initTimeline() {
+    const items  = document.querySelectorAll('.tl-item');
+    const numEl  = document.getElementById('expNum');
+    const roleEl = document.getElementById('expRole');
+    const coEl   = document.getElementById('expCo');
+    const descEl = document.getElementById('expDesc');
+    const tagsEl = document.getElementById('expTags');
+
+    function setActive(item) {
+        items.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+    }
+
+    function updatePanel(item) {
+        const targets = [numEl, roleEl, coEl, descEl, tagsEl];
+        gsap.to(targets, {
+            y: -16, opacity: 0, duration: .22, stagger: .04, ease: 'power2.in',
+            onComplete: () => {
+                numEl.textContent  = item.dataset.num;
+                roleEl.textContent = item.dataset.role;
+                coEl.textContent   = item.dataset.co;
+                descEl.textContent = item.dataset.desc;
+
+                const tagNames = item.dataset.tags.split(',');
+                tagsEl.innerHTML = tagNames.map(t =>
+                    `<span class="exp-tag">${t.trim()}</span>`
+                ).join('');
+
+                gsap.fromTo(targets,
+                    { y: 16, opacity: 0 },
+                    { y: 0, opacity: 1, duration: .38, stagger: .055, ease: 'power3.out' }
+                );
+            }
+        });
+    }
+
+    items.forEach(item => {
+        item.addEventListener('click', () => {
+            if (item.classList.contains('active')) return;
+            setActive(item);
+            updatePanel(item);
+        });
+
+        /* Auto-activate on scroll */
+        ScrollTrigger.create({
+            trigger: item,
+            start: 'top 55%',
+            end:   'bottom 55%',
+            onEnter:     () => { setActive(item); updatePanel(item); },
+            onEnterBack: () => { setActive(item); updatePanel(item); },
+        });
+
+        /* Reveal animation */
+        gsap.from(item, {
+            x: 50, opacity: 0, duration: .85, ease: 'power3.out',
+            scrollTrigger: {
+                trigger: item, start: 'top 88%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    /* Sticky panel reveal */
+    gsap.from('.exp-sticky > *', {
+        x: -40, opacity: 0, stagger: .1, duration: .9, ease: 'power3.out',
+        scrollTrigger: {
+            trigger: '.exp-sticky', start: 'top 80%',
+            toggleActions: 'play none none none',
+        }
+    });
+}
+
+/* ─────────────────────────────────────────
+   MAGNETIC BUTTONS
+───────────────────────────────────────── */
+function initMagneticButtons() {
+    document.querySelectorAll('.mag-btn').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+            const r  = btn.getBoundingClientRect();
+            const dx = (e.clientX - r.left - r.width  / 2) * .38;
+            const dy = (e.clientY - r.top  - r.height / 2) * .38;
+            gsap.to(btn, { x: dx, y: dy, duration: .4, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', () => {
+            gsap.to(btn, { x: 0, y: 0, duration: .75, ease: 'elastic.out(1,.55)' });
+        });
+    });
+}
+
+/* ─────────────────────────────────────────
+   SMOOTH ANCHOR NAVIGATION
+───────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const id = a.getAttribute('href');
+        if (id === '#') return;
+        const target = document.querySelector(id);
+        if (target) {
+            e.preventDefault();
+            lenis.scrollTo(target, { offset: -72, duration: 1.4 });
+            /* close mobile menu */
+            document.getElementById('mobile-menu').classList.remove('open');
+        }
+    });
+});
+
+/* ─────────────────────────────────────────
+   MOBILE HAMBURGER
+───────────────────────────────────────── */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+let menuOpen = false;
+
+hamburger.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    mobileMenu.classList.toggle('open', menuOpen);
+    /* animate bars */
+    if (menuOpen) {
+        gsap.to('#hb1', { rotation: 45,  y: 6,  duration: .3 });
+        gsap.to('#hb2', { opacity: 0,         duration: .2 });
+        gsap.to('#hb3', { rotation: -45, y: -6, duration: .3 });
+        lenis.stop();
+    } else {
+        gsap.to('#hb1', { rotation: 0, y: 0, duration: .3 });
+        gsap.to('#hb2', { opacity: 1,        duration: .2 });
+        gsap.to('#hb3', { rotation: 0, y: 0, duration: .3 });
+        lenis.start();
+    }
+});
+
+/* ─────────────────────────────────────────
+   BOOT
+───────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', bootPreloader);
+
+/* Kill cursor on mobile */
+if ('ontouchstart' in window) {
+    cOuter.style.display = 'none';
+    cInner.style.display = 'none';
+}
+</script>
+
+</body>
+</html>
