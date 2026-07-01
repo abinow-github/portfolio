@@ -387,8 +387,8 @@
         }
         .hero-title {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(3.5rem, 11vw, 9.5rem);
-            font-weight: 800; line-height: .88;
+            font-size: clamp(2.8rem, 8vw, 7rem);
+            font-weight: 800; line-height: .9;
             letter-spacing: -.025em; text-transform: uppercase;
             color: var(--txt);
         }
@@ -1072,6 +1072,96 @@
         }
 
         /* ─────────────────────────────────────────
+           EDUCATION
+        ───────────────────────────────────────── */
+        #education { background: var(--bg); }
+        .edu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+        .edu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color .35s, background .35s;
+        }
+        .edu-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .5s cubic-bezier(.7,0,.3,1);
+        }
+        .edu-card:hover { border-color: rgba(31,194,99,.2); background: #111115; }
+        .edu-card:hover::before { transform: scaleX(1); }
+        .edu-type {
+            display: inline-flex; align-items: center; gap: .5rem;
+            font-size: .58rem; font-weight: 600; letter-spacing: .18em;
+            text-transform: uppercase; color: var(--accent-hi);
+            background: rgba(31,194,99,.07);
+            border: 1px solid rgba(31,194,99,.15);
+            padding: .3rem .8rem; margin-bottom: 1.5rem;
+        }
+        .edu-degree {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--txt); line-height: 1.25;
+            margin-bottom: .6rem;
+        }
+        .edu-institution {
+            font-size: .8rem; color: var(--txt-2);
+            margin-bottom: .4rem; line-height: 1.4;
+        }
+        .edu-sub {
+            font-size: .68rem; color: var(--txt-muted);
+            font-style: italic; margin-bottom: 1.4rem;
+        }
+        .edu-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+        }
+        .edu-date {
+            font-family: 'Syne', sans-serif;
+            font-size: .72rem; font-weight: 700; color: var(--txt-muted);
+            letter-spacing: .08em;
+        }
+        .edu-icon {
+            width: 36px; height: 36px;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent-hi); font-size: 1rem;
+        }
+
+        /* also add to languages/certif strip */
+        .edu-extras {
+            display: flex; gap: 1.5rem; margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        .edu-extra-card {
+            flex: 1; min-width: 220px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex; flex-direction: column; gap: .8rem;
+        }
+        .edu-extra-label {
+            font-size: .58rem; font-weight: 600; letter-spacing: .18em;
+            text-transform: uppercase; color: var(--txt-muted);
+        }
+        .edu-extra-items { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .edu-extra-tag {
+            font-size: .7rem; padding: .3rem .75rem;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--border);
+            color: var(--txt-2);
+        }
+
+        /* ─────────────────────────────────────────
            SOCIAL SECTION
         ───────────────────────────────────────── */
         #social { background: var(--bg-card); }
@@ -1307,18 +1397,26 @@
             position: relative;
         }
         .mbn-item svg {
-            width: 22px; height: 22px; fill: var(--txt-muted);
-            transition: fill .25s, transform .25s;
+            width: 22px; height: 22px; fill: rgba(240,237,232,0.32);
+            transition: fill .3s, transform .25s;
         }
         .mbn-item span {
             font-size: .52rem; font-weight: 600;
             letter-spacing: .1em; text-transform: uppercase;
-            color: var(--txt-muted);
-            transition: color .25s;
+            color: rgba(240,237,232,0.32);
+            transition: color .3s;
         }
         .mbn-item.active svg  { fill: var(--accent-hi); }
         .mbn-item.active span { color: var(--accent-hi); }
-        .mbn-item:hover svg   { fill: var(--txt-2); transform: translateY(-2px); }
+        .mbn-item.active      { position: relative; }
+        .mbn-item.active::after {
+            content: '';
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 18px; height: 2px;
+            background: var(--accent-hi);
+            border-radius: 2px 2px 0 0;
+        }
+        .mbn-item:hover svg   { fill: rgba(240,237,232,0.65); transform: translateY(-2px); }
 
         /* ─────────────────────────────────────────
            RESPONSIVE — TABLET (≤1024px)
@@ -1342,6 +1440,7 @@
             .results-grid       { grid-template-columns: 1fr; }
             .results-stats      { flex-wrap: wrap; }
             .rstat              { flex: 0 0 50%; border-bottom: 1px solid var(--border); }
+            .edu-grid           { grid-template-columns: 1fr; gap: 1rem; }
         }
 
         /* ─────────────────────────────────────────
@@ -1371,7 +1470,7 @@
             .hero-photo-col     { order: -1; justify-content: center; }
             .photo-bg-name      { font-size: clamp(3rem, 14vw, 5rem); bottom: -1.5rem; }
             .photo-frame        {
-                width: 200px; height: 240px;
+                width: min(72vw, 280px); height: min(88vw, 340px);
                 margin: 0 auto;
             }
             .photo-tag          {
@@ -1384,7 +1483,7 @@
 
             /* Hero text: centered on mobile */
             .hero-badge         { justify-content: center; }
-            .hero-title         { font-size: clamp(2.8rem, 13vw, 4.5rem); text-align: center; }
+            .hero-title         { font-size: clamp(2.2rem, 10vw, 3.8rem); text-align: center; }
             .title-line         { display: block; }
             .hero-sub           { text-align: center; }
             .hero-desc          { text-align: center; margin: 1.2rem auto 0; font-size: .88rem; }
@@ -1459,8 +1558,8 @@
         ───────────────────────────────────────── */
         @media (max-width: 480px) {
             #nav                { padding: .9rem 1rem; }
-            .hero-title         { font-size: clamp(2.4rem, 12vw, 3.5rem); }
-            .photo-frame        { width: 170px; height: 210px; }
+            .hero-title         { font-size: clamp(2rem, 9vw, 3rem); }
+            .photo-frame        { width: min(78vw, 260px); height: min(96vw, 320px); }
             .gban-right         { grid-template-columns: 1fr; }
             .info-cards         { gap: 1.5px; }
             .exp-big-num        { font-size: 4rem; }
@@ -1496,6 +1595,7 @@
     <a href="#skills"     class="mob-link">Expertise</a>
     <a href="#results"    class="mob-link">Rankings</a>
     <a href="#experience" class="mob-link">Experience</a>
+    <a href="#education"  class="mob-link">Education</a>
     <a href="#contact"    class="mob-link">Contact</a>
 </div>
 
@@ -1541,6 +1641,7 @@
         <li><a href="#skills">Expertise</a></li>
         <li><a href="#results">Results</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="mailto:seethalakshmim2003@gmail.com" class="nav-cta mag-btn">
@@ -2065,14 +2166,14 @@
             <!-- Sticky preview panel -->
             <div class="exp-sticky">
                 <div class="exp-big-num" id="expNum">01</div>
-                <div class="exp-current-role" id="expRole">SEO Analyst</div>
-                <div class="exp-current-co" id="expCo">Digitz Technologies · Dubai / Calicut</div>
-                <p class="exp-current-desc" id="expDesc">Led technical SEO for a diverse portfolio of UAE-based clients. Specialized in Arabic market localization, Google Business Profile optimization, and comprehensive site audits that drove measurable SERP improvements across competitive verticals.</p>
+                <div class="exp-current-role" id="expRole">SEO Executive</div>
+                <div class="exp-current-co" id="expCo">Iberr Technologies · Kerala, India</div>
+                <p class="exp-current-desc" id="expDesc">Executed full-cycle SEO campaigns for multiple clients — keyword research, on-page optimization, link building, and performance tracking. Implemented AEO with Schema Markup and local SEO strategies that ranked businesses on Google Maps and local search results.</p>
                 <div class="exp-current-tags" id="expTags">
-                    <span class="exp-tag">Technical SEO</span>
+                    <span class="exp-tag">On-Page SEO</span>
                     <span class="exp-tag">Local SEO</span>
-                    <span class="exp-tag">UAE Market</span>
-                    <span class="exp-tag">Site Audits</span>
+                    <span class="exp-tag">AEO</span>
+                    <span class="exp-tag">Schema Markup</span>
                 </div>
             </div>
 
@@ -2081,43 +2182,113 @@
 
                 <div class="tl-item active"
                      data-num="01"
-                     data-role="SEO Analyst"
-                     data-co="Digitz Technologies · Dubai / Calicut"
-                     data-desc="Led technical SEO for a diverse portfolio of UAE-based clients. Specialized in Arabic market localization, Google Business Profile optimization, and comprehensive site audits that drove measurable SERP improvements across competitive verticals."
-                     data-tags="Technical SEO,Local SEO,UAE Market,Site Audits">
+                     data-role="SEO Executive"
+                     data-co="Iberr Technologies · Kerala, India"
+                     data-desc="Executed full-cycle SEO campaigns for multiple clients — keyword research, on-page optimization, link building, and performance tracking. Implemented AEO with Schema Markup and local SEO strategies that ranked businesses on Google Maps and local search results."
+                     data-tags="On-Page SEO,Local SEO,AEO,Schema Markup">
                     <div class="tl-line"></div>
                     <div class="tl-dot"></div>
                     <div class="tl-header">
-                        <div class="tl-role">SEO Analyst</div>
-                        <div class="tl-date">2023 — 2024</div>
+                        <div class="tl-role">SEO Executive</div>
+                        <div class="tl-date">Dec 2024 — Dec 2025</div>
                     </div>
-                    <div class="tl-company">Digitz Technologies</div>
-                    <div class="tl-location">Dubai HQ · Calicut Operations · International Clients</div>
+                    <div class="tl-company">Iberr Technologies</div>
+                    <div class="tl-location">Kerala, India</div>
                     <div class="tl-detail">
-                        Managed technical SEO for UAE-market clients. Performed in-depth site audits, implemented structured data, optimized Core Web Vitals, and developed regionally-attuned content strategies. Achieved consistent top-3 ranking improvements across competitive niches.
+                        Executed SEO strategies for multiple websites including keyword research, on-page optimization, link building, and performance tracking. Specialized in AEO and Structured Data — Schema Markup and rich result strategies to improve SERP visibility. Implemented Local SEO campaigns to enhance Google Maps rankings and supported social media marketing for brand growth.
                     </div>
                 </div>
 
                 <div class="tl-item"
                      data-num="02"
-                     data-role="SEO Executive"
-                     data-co="Iberr Technologies · Kerala, India"
-                     data-desc="Built comprehensive SEO frameworks for local and regional businesses. Executed full-cycle campaigns encompassing technical audits, content creation, local citation building, and performance analytics — consistently delivering top-3 Google rankings for target keywords."
-                     data-tags="Content SEO,Local Campaigns,AEO,Analytics">
+                     data-role="SEO Analyst"
+                     data-co="Digitz Technologies · Dubai / Calicut"
+                     data-desc="Conduct in-depth keyword research and develop strategic SEO plans for UAE clients. Handle technical SEO tasks including site speed optimization, crawl error fixes, structured data, and AEO implementation — driving measurable search ranking improvements."
+                     data-tags="Technical SEO,UAE Clients,Keyword Research,Link Building">
                     <div class="tl-line"></div>
                     <div class="tl-dot"></div>
                     <div class="tl-header">
-                        <div class="tl-role">SEO Executive</div>
-                        <div class="tl-date">2024 — Present</div>
+                        <div class="tl-role">SEO Analyst <span style="font-size:.65em;color:var(--accent-hi);font-weight:600;margin-left:.5rem;">● Current</span></div>
+                        <div class="tl-date">Dec 2025 — Present</div>
                     </div>
-                    <div class="tl-company">Iberr Technologies</div>
-                    <div class="tl-location">Kerala, India · Regional Market Focus</div>
+                    <div class="tl-company">Digitz Technologies</div>
+                    <div class="tl-location">Dubai · Calicut Operations</div>
                     <div class="tl-detail">
-                        Spearheading SEO operations for regional brands. Developed content-driven SEO strategies, managed local SEO campaigns, and implemented AEO best practices. Delivering consistent ranking improvements and organic traffic growth through data-backed, iterative optimization.
+                        Conducting in-depth keyword research and developing strategic SEO plans to enhance search rankings. Using tools including Google Analytics, Search Console, SEMrush, Ubersuggest, Screaming Frog, Ahrefs, Moz, and Microsoft Clarity. Handling UAE clients, resolving technical SEO issues, and implementing link-building strategies. Expert in local SEO for UAE and regional market visibility.
                     </div>
                 </div>
 
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── EDUCATION ───────────────────────── -->
+<section id="education" class="section">
+    <div class="s-inner">
+
+        <div class="reveal-up"><span class="s-label reveal-up-inner">Academic Background</span></div>
+        <div class="s-title">
+            <div class="reveal-up"><span class="reveal-up-inner">Education</span></div>
+            <div class="reveal-up"><span class="reveal-up-inner dim">&amp; Credentials</span></div>
+        </div>
+
+        <div class="edu-grid">
+
+            <!-- Diploma -->
+            <div class="edu-card">
+                <div class="edu-type">&#127891; Professional Diploma</div>
+                <div class="edu-degree">Diploma in Digital Marketing<br>With E-Commerce &amp; Data Management</div>
+                <div class="edu-institution">Etudemy Digital Marketing Academy</div>
+                <div class="edu-sub">Perinthalmanna, Kerala</div>
+                <div class="edu-footer">
+                    <div class="edu-date">Jul 2024 — Nov 2024</div>
+                    <div class="edu-icon">&#127891;</div>
+                </div>
+            </div>
+
+            <!-- BA -->
+            <div class="edu-card">
+                <div class="edu-type">&#127979; Undergraduate Degree</div>
+                <div class="edu-degree">BA Political Science</div>
+                <div class="edu-institution">Panampilly Memorial Government College</div>
+                <div class="edu-sub">Chalakkudy, Thrissur &mdash; University of Calicut</div>
+                <div class="edu-footer">
+                    <div class="edu-date">Jun 2020 — Mar 2023</div>
+                    <div class="edu-icon">&#127979;</div>
+                </div>
+            </div>
+
+        </div><!-- /edu-grid -->
+
+        <!-- Languages & Certifications strip -->
+        <div class="edu-extras">
+
+            <div class="edu-extra-card">
+                <div class="edu-extra-label">Languages</div>
+                <div class="edu-extra-items">
+                    <span class="edu-extra-tag">Malayalam</span>
+                    <span class="edu-extra-tag">English</span>
+                </div>
+            </div>
+
+            <div class="edu-extra-card">
+                <div class="edu-extra-label">Certifications</div>
+                <div class="edu-extra-items">
+                    <span class="edu-extra-tag">Bachelor of Arts</span>
+                    <span class="edu-extra-tag">Diploma in Digital Marketing</span>
+                    <span class="edu-extra-tag">E-Commerce &amp; Data Management</span>
+                </div>
+            </div>
+
+            <div class="edu-extra-card">
+                <div class="edu-extra-label">Location</div>
+                <div class="edu-extra-items">
+                    <span class="edu-extra-tag">Pattambi, Palakkad</span>
+                    <span class="edu-extra-tag">Kerala, India</span>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -2620,6 +2791,22 @@ function initScrollReveals() {
         }
     );
 
+    /* Education section */
+    gsap.fromTo('.edu-card',
+        { y: 50, opacity: 0 },
+        {
+            y: 0, opacity: 1, stagger: .18, duration: .9, ease: 'power3.out',
+            scrollTrigger: { trigger: '.edu-grid', start: 'top 85%', ...st }
+        }
+    );
+    gsap.fromTo('.edu-extra-card',
+        { y: 30, opacity: 0 },
+        {
+            y: 0, opacity: 1, stagger: .12, duration: .75, ease: 'power3.out',
+            scrollTrigger: { trigger: '.edu-extras', start: 'top 88%', ...st }
+        }
+    );
+
     /* Results section */
     gsap.fromTo('.results-stats .rstat',
         { y: 30, opacity: 0 },
@@ -2818,18 +3005,51 @@ if (hamburger) {
    MOBILE BOTTOM NAV — active section tracking
 ───────────────────────────────────────── */
 (function() {
-    const sections = ['hero','about','skills','results','experience','contact'];
+    /* ordered list — determines priority when multiple sections visible */
+    const sectionOrder = ['hero','about','skills','google-banner','results','experience','education','social','contact'];
+
+    /* map every section to its nav href (sections with no nav item map to nearest) */
+    const sectionNavMap = {
+        'hero':          '#hero',
+        'about':         '#about',
+        'skills':        '#skills',
+        'google-banner': '#skills',
+        'results':       '#results',
+        'experience':    '#experience',
+        'education':     '#experience',
+        'social':        '#contact',
+        'contact':       '#contact',
+    };
+
     const mbnItems = document.querySelectorAll('.mbn-item');
+    const visible   = new Set();
+
+    function updateActive() {
+        let activeNav = null;
+        for (const id of sectionOrder) {
+            if (visible.has(id)) {
+                activeNav = sectionNavMap[id];
+                break;
+            }
+        }
+        mbnItems.forEach(item => {
+            const isActive = item.getAttribute('href') === activeNav;
+            item.classList.toggle('active', isActive);
+        });
+    }
+
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                mbnItems.forEach(i => i.classList.remove('active'));
-                const match = document.querySelector(`.mbn-item[href="#${entry.target.id}"]`);
-                if (match) match.classList.add('active');
+                visible.add(entry.target.id);
+            } else {
+                visible.delete(entry.target.id);
             }
         });
-    }, { threshold: .35 });
-    sections.forEach(id => {
+        updateActive();
+    }, { threshold: 0.25 });
+
+    sectionOrder.forEach(id => {
         const el = document.getElementById(id);
         if (el) observer.observe(el);
     });
