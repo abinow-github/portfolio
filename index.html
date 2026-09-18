@@ -783,6 +783,48 @@
         }
 
         /* ─────────────────────────────────────────
+           PERFORMANCE METRICS
+        ───────────────────────────────────────── */
+        #performance { background: var(--bg-2); }
+        .perf-desc {
+            font-size: .98rem; line-height: 1.85; color: var(--txt-2);
+            padding-top: 1.5rem; max-width: 600px;
+        }
+        .perf-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 2rem; margin-top: 4rem;
+        }
+        .perf-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            position: relative; overflow: hidden;
+            transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color .4s, box-shadow .4s;
+            cursor: pointer;
+        }
+        .perf-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(31,194,99,.08) 0%, transparent 60%);
+            opacity: 0; transition: opacity .4s; z-index: 1; pointer-events: none;
+        }
+        .perf-card:hover {
+            border-color: rgba(31,194,99,.25);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(31,194,99,.1);
+        }
+        .perf-card:hover::before { opacity: 1; }
+        .perf-card-inner {
+            position: relative; overflow: hidden;
+            width: 100%;
+            border: 1px solid var(--border);
+        }
+        .perf-card img {
+            width: 100%; display: block;
+            transition: transform .7s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .perf-card:hover img { transform: scale(1.05); }
+
+        /* ─────────────────────────────────────────
            EXPERIENCE
         ───────────────────────────────────────── */
         #experience { background: var(--bg-2); min-height: 100vh; }
@@ -1466,6 +1508,7 @@
             .results-stats      { flex-wrap: wrap; }
             .rstat              { flex: 0 0 50%; border-bottom: 1px solid var(--border); }
             .edu-grid           { grid-template-columns: 1fr; gap: 1rem; }
+            .perf-grid          { grid-template-columns: 1fr; gap: 2rem; }
         }
 
         /* ─────────────────────────────────────────
@@ -1612,7 +1655,7 @@
         <div class="pre-line" id="preLine"></div>
         <div class="pre-name"><span class="pre-name-inner" id="preName1">Seetha</span></div>
         <div class="pre-name"><span class="pre-name-inner" id="preName2">Lakshmi<span style="color:var(--accent-hi)">.</span>M</span></div>
-        <div class="pre-count" id="preCount">SEO</div>
+        <!-- <div class="pre-count" id="preCount">SEO</div> -->
     </div>
 </div>
 
@@ -2016,38 +2059,25 @@
         <div class="gban-right" id="gbanTools">
 
             <div class="gban-tool">
-                <svg class="gban-tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="24" height="24" rx="4" fill="#E37400" opacity=".15"/>
-                    <path d="M12 4a8 8 0 100 16A8 8 0 0012 4zm0 14.5A6.5 6.5 0 1118.5 12 6.51 6.51 0 0112 18.5z" fill="#E37400"/>
-                    <path d="M12 8.5v4.25l3 1.75-.75 1.3L11 14V8.5h1z" fill="#E37400"/>
-                </svg>
+                <img src="img/google/Logo_Google_Analytics.svg.webp" class="gban-tool-icon" alt="Google Analytics 4" style="object-fit: contain;">
                 <div class="gban-tool-name">Google Analytics 4</div>
                 <div class="gban-tool-desc">Behaviour tracking, event setup &amp; conversion attribution</div>
             </div>
 
             <div class="gban-tool">
-                <svg class="gban-tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="24" height="24" rx="4" fill="#4285F4" opacity=".15"/>
-                    <path d="M20 3H4C2.9 3 2 3.9 2 5v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h8v2zm3-4H7v-2h11v2zm0-4H7V7h11v2z" fill="#4285F4"/>
-                </svg>
+                <img src="img/google/google-search-console-icon-free-png.webp" class="gban-tool-icon" alt="Search Console" style="object-fit: contain;">
                 <div class="gban-tool-name">Search Console</div>
                 <div class="gban-tool-desc">Impressions, CTR, index coverage &amp; crawl diagnostics</div>
             </div>
 
             <div class="gban-tool">
-                <svg class="gban-tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="24" height="24" rx="4" fill="#34A853" opacity=".15"/>
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z" fill="#34A853"/>
-                </svg>
+                <img src="img/google/googlemybusiness.png" class="gban-tool-icon" alt="Google My Business" style="object-fit: contain;">
                 <div class="gban-tool-name">Google My Business</div>
                 <div class="gban-tool-desc">Local pack rankings, GMB optimisation &amp; review strategy</div>
             </div>
 
             <div class="gban-tool">
-                <svg class="gban-tool-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="24" height="24" rx="4" fill="#EA4335" opacity=".15"/>
-                    <path d="M22 6H2v2l10 7 10-7V6zm0 4.24l-10 7-10-7V18h20V10.24z" fill="#EA4335"/>
-                </svg>
+                <img src="img/google/google-trends-logo-icon-free-png.webp" class="gban-tool-icon" alt="Google Trends" style="object-fit: contain;">
                 <div class="gban-tool-name">Google Trends</div>
                 <div class="gban-tool-desc">Seasonal demand mapping &amp; keyword trend forecasting</div>
             </div>
@@ -2182,6 +2212,39 @@
             </div>
 
         </div><!-- /results-grid -->
+    </div>
+</section>
+
+<!-- ─── PERFORMANCE METRICS ─────────────────── -->
+<section id="performance" class="section">
+    <div class="s-inner">
+        <div class="reveal-up"><span class="s-label reveal-up-inner">Real Data</span></div>
+        <div class="s-title">
+            <div class="reveal-up"><span class="reveal-up-inner">Search</span></div>
+            <div class="reveal-up"><span class="reveal-up-inner dim">Console</span></div>
+        </div>
+        <p class="perf-desc reveal-up" style="opacity:0; transform:translateY(40px);">
+            Verified traffic growth and visibility improvements straight from Google Search Console. 
+            Real data backing up the ranking claims.
+        </p>
+
+        <div class="perf-grid">
+            <div class="perf-card">
+                <div class="perf-card-inner">
+                    <img src="img/gsc-proof-1.jpeg" alt="GSC Performance Proof 1" loading="lazy">
+                </div>
+            </div>
+            <div class="perf-card">
+                <div class="perf-card-inner">
+                    <img src="img/gsc-proof-2.jpeg" alt="GSC Performance Proof 2" loading="lazy">
+                </div>
+            </div>
+            <div class="perf-card">
+                <div class="perf-card-inner">
+                    <img src="img/gsc-proof-3.jpeg" alt="GSC Performance Proof 3" loading="lazy">
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -2863,6 +2926,22 @@ function initScrollReveals() {
         {
             x: 0, opacity: 1, stagger: .045, duration: .65, ease: 'power3.out',
             scrollTrigger: { trigger: '.results-grid', start: 'top 75%', ...st }
+        }
+    );
+
+    /* Performance section */
+    gsap.fromTo('.perf-desc',
+        { y: 28, opacity: 0 },
+        {
+            y: 0, opacity: 1, duration: .9, ease: 'power3.out',
+            scrollTrigger: { trigger: '.perf-desc', start: 'top 90%', ...st }
+        }
+    );
+    gsap.fromTo('.perf-card',
+        { y: 50, opacity: 0 },
+        {
+            y: 0, opacity: 1, stagger: .15, duration: .9, ease: 'power3.out',
+            scrollTrigger: { trigger: '.perf-grid', start: 'top 85%', ...st }
         }
     );
 }
