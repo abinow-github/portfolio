@@ -50,12 +50,12 @@
            RESET + BASE
         ───────────────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { background: var(--bg); scroll-behavior: auto; overflow-x: hidden; }
+        html { background: var(--bg); scroll-behavior: auto; overflow-x: clip; }
         body {
             background: var(--bg);
             color: var(--txt);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            overflow-x: clip;
             cursor: none;
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizeLegibility;
@@ -783,144 +783,657 @@
         }
 
         /* ─────────────────────────────────────────
-           PERFORMANCE METRICS
+           PERFORMANCE METRICS — SEARCH CONSOLE SLIDER
         ───────────────────────────────────────── */
-        #performance { background: var(--bg-2); }
+        #performance {
+            background: var(--bg-2);
+            position: relative;
+            overflow: hidden;
+        }
         .perf-desc {
             font-size: .98rem; line-height: 1.85; color: var(--txt-2);
             padding-top: 1.5rem; max-width: 600px;
         }
-        .perf-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 2rem; margin-top: 4rem;
+
+        /* Slider Wrapper */
+        .perf-slider-wrap {
+            position: relative;
+            margin-top: 3.5rem;
+            width: 100%;
         }
+
+        /* Viewport */
+        .perf-slider-viewport {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            padding: 2.4rem 0;
+            cursor: grab;
+        }
+        .perf-slider-viewport:active {
+            cursor: grabbing;
+        }
+
+        /* Track */
+        .perf-slider-track {
+            display: flex;
+            align-items: center;
+            gap: 2.2rem;
+            will-change: transform;
+            width: max-content;
+        }
+
+        /* Each Slide */
+        .perf-slide {
+            flex: 0 0 clamp(420px, 56vw, 760px);
+            max-width: 85vw;
+            box-sizing: border-box;
+            transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.65s ease;
+            will-change: transform, opacity;
+            user-select: none;
+        }
+
+        /* Non-center slides: slightly smaller and dimmer */
+        .perf-slide:not(.is-center) {
+            transform: scale(0.88);
+            opacity: 0.45;
+            cursor: pointer;
+        }
+        .perf-slide:not(.is-center):hover {
+            opacity: 0.75;
+            transform: scale(0.92);
+        }
+
+        /* Center slide: distinctly bigger and fully focused */
+        .perf-slide.is-center {
+            transform: scale(1.06);
+            opacity: 1;
+            z-index: 5;
+        }
+
+        /* Card: STRICTLY NO PADDING */
         .perf-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            padding: 1rem;
-            position: relative; overflow: hidden;
-            transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color .4s, box-shadow .4s;
-            cursor: pointer;
+            border-radius: 0;
+            padding: 0 !important;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
-        .perf-card::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(31,194,99,.08) 0%, transparent 60%);
-            opacity: 0; transition: opacity .4s; z-index: 1; pointer-events: none;
+        .perf-slide.is-center .perf-card {
+            border-color: rgba(31, 194, 99, 0.35);
+            box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7);
         }
-        .perf-card:hover {
-            border-color: rgba(31,194,99,.25);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(31,194,99,.1);
-        }
-        .perf-card:hover::before { opacity: 1; }
         .perf-card-inner {
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
             width: 100%;
-            border: 1px solid var(--border);
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            line-height: 0;
         }
         .perf-card img {
-            width: 100%; display: block;
-            transition: transform .7s cubic-bezier(0.2, 1, 0.3, 1);
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            border-radius: 0;
+            pointer-events: none;
         }
-        .perf-card:hover img { transform: scale(1.05); }
+
+        /* Top 2px subtle gradient bar on active slide card */
+        .perf-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 2;
+        }
+        .perf-slide.is-center .perf-card::before {
+            opacity: 1;
+        }
+
+        /* Navigation Arrows on sides */
+        .perf-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            background: rgba(16, 16, 19, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            color: var(--txt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.25s ease;
+        }
+        .perf-nav-btn.prev {
+            left: 0.5rem;
+        }
+        .perf-nav-btn.next {
+            right: 0.5rem;
+        }
+        .perf-nav-btn:hover {
+            border-color: var(--accent-hi);
+            background: rgba(31, 194, 99, 0.12);
+            color: var(--accent-hi);
+        }
+        .perf-nav-btn:active {
+            transform: translateY(-50%) scale(0.94);
+        }
+
+        /* Controls row (Pagination dots & Counter) */
+        .perf-slider-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.2rem;
+        }
+        .perf-slider-dots {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .perf-dot {
+            width: 24px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.35s ease;
+        }
+        .perf-dot:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .perf-dot.active {
+            background: var(--accent-hi);
+            width: 44px;
+        }
+        .perf-slider-counter {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--txt-muted);
+        }
+        .perf-slider-counter em {
+            color: var(--accent-hi);
+            font-style: normal;
+        }
 
         /* ─────────────────────────────────────────
-           EXPERIENCE
+           EXPERIENCE — REFINED & HARMONIZED
         ───────────────────────────────────────── */
-        #experience { background: var(--bg-2); min-height: 100vh; }
-        .exp-layout {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 7rem; margin-top: 5rem;
+        #experience {
+            background: var(--bg-2);
+            position: relative;
+            padding: 7.5rem 3rem 6.5rem;
+            overflow: visible;
         }
+
+        .exp-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+            gap: 4.5rem;
+            margin-top: 3.5rem;
+            align-items: stretch;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Sticky Left Column ── */
         .exp-sticky {
             position: sticky;
-            top: calc(50vh - 220px);
-            align-self: start; height: fit-content;
+            top: clamp(90px, 12vh, 115px);
+            align-self: start;
+            width: 100%;
+            z-index: 10;
+        }
+        .exp-sticky-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 2.2rem 2.4rem;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.35s ease;
+        }
+        .exp-sticky-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+        }
+
+        /* Card Header with Status Pill and Huge Stylized Number */
+        .exp-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+        .exp-status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.75rem;
+            background: rgba(31, 194, 99, 0.07);
+            border: 1px solid rgba(31, 194, 99, 0.18);
+            border-radius: 0;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent-hi);
+        }
+        .exp-pulse-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent-hi);
         }
         .exp-big-num {
             font-family: 'Outfit', sans-serif;
-            font-size: clamp(5rem, 10vw, 8rem);
-            font-style: italic; font-weight: 300;
-            color: var(--accent); opacity: .12; line-height: 1;
+            font-size: clamp(2.4rem, 3.5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: var(--txt-muted);
+            user-select: none;
+            transition: color 0.35s ease;
+        }
+
+        /* Role & Company Details */
+        .exp-role-wrap {
+            margin-top: 0.2rem;
         }
         .exp-current-role {
             font-family: 'Outfit', sans-serif;
-            font-size: clamp(1.6rem, 3vw, 2.4rem);
-            font-weight: 800; color: var(--txt); line-height: 1.1;
-            margin-top: -1.5rem;
+            font-size: clamp(1.4rem, 2vw, 1.7rem);
+            font-weight: 800;
+            color: var(--txt);
+            line-height: 1.15;
+            letter-spacing: -0.015em;
+        }
+        .exp-meta-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.55rem;
+            font-size: 0.78rem;
+            color: var(--txt-2);
         }
         .exp-current-co {
-            font-size: .72rem; font-weight: 600;
-            letter-spacing: .2em; text-transform: uppercase;
-            color: var(--accent-hi); margin-top: 1rem;
+            font-weight: 600;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
         }
+        .exp-icon {
+            font-size: 1rem !important;
+            color: var(--accent-hi);
+        }
+        .exp-icon-sm {
+            font-size: 0.88rem !important;
+            color: var(--accent-hi);
+        }
+        .exp-dot-sep {
+            color: var(--txt-muted);
+            font-size: 0.75rem;
+        }
+        .exp-current-loc {
+            color: var(--txt-2);
+        }
+        .exp-date-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.6rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--txt-2);
+        }
+
+        .exp-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1.1rem 0;
+        }
+
         .exp-current-desc {
-            font-size: .92rem; line-height: 1.82; color: var(--txt-2);
-            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #9ca3af;
+        }
+
+        .exp-tags-section {
+            margin-top: 1.1rem;
+        }
+        .exp-tags-title {
+            display: block;
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent-hi);
+            margin-bottom: 0.55rem;
         }
         .exp-current-tags {
-            display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
         }
         .exp-tag {
-            font-size: .6rem; font-weight: 600;
-            letter-spacing: .14em; text-transform: uppercase;
-            color: var(--accent-hi); background: rgba(12,92,54,.14);
-            border: 1px solid var(--border-hi); padding: .35rem .85rem;
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--txt-muted);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 0.3rem 0.65rem;
+            transition: border-color 0.25s ease, color 0.25s ease;
         }
-        .timeline { display: flex; flex-direction: column; }
-        .tl-item {
-            padding: 2.8rem 0 2.8rem 2.5rem;
+        .exp-tag:hover {
+            border-color: rgba(31, 194, 99, 0.3);
+            color: var(--txt-2);
+        }
+
+        /* Stepper navigation buttons in left panel */
+        .exp-nav-pills {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+            margin-top: 1.4rem;
+            padding-top: 1.1rem;
             border-top: 1px solid var(--border);
-            position: relative;
+        }
+        .exp-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            color: var(--txt-2);
+            font-size: 0.68rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: padding .3s ease;
+            transition: all 0.25s ease;
+            text-align: left;
+            width: 100%;
         }
-        .tl-item:last-child { border-bottom: 1px solid var(--border); }
-        .tl-dot {
-            position: absolute; left: 0; top: 3.5rem;
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--txt-muted);
-            transition: background .35s, box-shadow .35s, transform .35s;
-        }
-        .tl-item.active .tl-dot {
-            background: var(--accent-hi);
-            box-shadow: 0 0 18px rgba(31,194,99,.45);
-            transform: scale(1.3);
-        }
-        .tl-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: .6rem;
-        }
-        .tl-role {
-            font-size: .62rem; font-weight: 600;
-            letter-spacing: .2em; text-transform: uppercase; color: var(--accent-hi);
-        }
-        .tl-date { font-size: .62rem; color: var(--txt-muted); letter-spacing: .08em; }
-        .tl-company {
+        .exp-pill-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem; font-weight: 700;
-            color: var(--txt-muted); line-height: 1.2;
-            transition: color .35s;
+            font-weight: 700;
+            color: var(--accent-hi);
+            font-size: 0.78rem;
         }
-        .tl-item.active .tl-company { color: var(--txt); }
-        .tl-location {
-            font-size: .8rem; color: var(--txt-muted); margin-top: .4rem;
+        .exp-pill-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .tl-detail {
-            font-size: .88rem; line-height: 1.75; color: var(--txt-2);
-            margin-top: 1rem; max-height: 0; overflow: hidden;
-            transition: max-height .45s cubic-bezier(.7,0,.3,1), opacity .35s;
-            opacity: 0;
+        .exp-pill:hover {
+            border-color: rgba(31, 194, 99, 0.25);
+            color: var(--txt);
+            background: rgba(31, 194, 99, 0.04);
         }
-        .tl-item.active .tl-detail { max-height: 200px; opacity: 1; }
-        .tl-line {
-            position: absolute; left: 0; top: 0; bottom: 0;
-            width: 1.5px;
-            background: linear-gradient(to bottom, var(--accent), transparent);
-            transform: scaleY(0); transform-origin: top;
-            transition: transform .5s cubic-bezier(.7,0,.3,1);
+        .exp-pill.active {
+            background: rgba(31, 194, 99, 0.08);
+            border-color: rgba(31, 194, 99, 0.4);
+            color: #fff;
+            box-shadow: none;
         }
-        .tl-item.active .tl-line { transform: scaleY(1); }
+
+        /* ── Right Scrolling Timeline ── */
+        .timeline {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 2.8rem;
+            padding: 0.5rem 0 11rem 0;
+        }
+
+        /* Continuous spine rail */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 2rem;
+            bottom: 2rem;
+            width: 1px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .tl-item {
+            position: relative;
+            padding-left: 3.5rem;
+            cursor: pointer;
+            transition: opacity 0.35s ease;
+        }
+
+        /* Node marker */
+        .tl-node {
+            position: absolute;
+            left: 0;
+            top: 2rem;
+            width: 31px;
+            height: 31px;
+            border-radius: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--txt-muted);
+            z-index: 2;
+            transition: border-color 0.35s ease, color 0.35s ease, background 0.35s ease;
+        }
+        .tl-item.active .tl-node {
+            border-color: var(--accent-hi);
+            background: rgba(31, 194, 99, 0.08);
+            color: var(--accent-hi);
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Timeline Card */
+        .tl-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 2.3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.35s ease, background 0.35s ease, opacity 0.35s ease;
+        }
+        .tl-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.45s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        /* Inactive vs Active Card contrast */
+        .tl-item:not(.active) .tl-card {
+            opacity: 0.55;
+            border-color: var(--border);
+        }
+        .tl-item:not(.active):hover .tl-card {
+            opacity: 0.85;
+            border-color: rgba(31, 194, 99, 0.2);
+            background: #111115;
+        }
+        .tl-item.active .tl-card {
+            opacity: 1;
+            border-color: rgba(31, 194, 99, 0.35);
+            background: #111115;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+        }
+        .tl-item.active .tl-card::before {
+            transform: scaleX(1);
+        }
+
+        /* Card Top Header */
+        .tl-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 0.4rem;
+        }
+        .tl-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent-hi);
+            margin-bottom: 0.35rem;
+        }
+        .tl-company-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--txt);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+        .tl-period-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--txt-2);
+        }
+        .tl-cal-icon {
+            font-size: 0.95rem !important;
+            color: var(--accent-hi);
+        }
+
+        /* Location Row */
+        .tl-location-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--txt-2);
+            margin-top: 0.35rem;
+            margin-bottom: 1.2rem;
+        }
+        .tl-loc-icon {
+            font-size: 0.95rem !important;
+            color: var(--accent-hi);
+        }
+        .tl-badge-sub {
+            padding: 0.2rem 0.55rem;
+            background: rgba(31, 194, 99, 0.07);
+            border: 1px solid rgba(31, 194, 99, 0.18);
+            border-radius: 0;
+            font-size: 0.6rem;
+            color: var(--accent-hi);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-left: 0.4rem;
+        }
+
+        /* Summary Text */
+        .tl-summary {
+            font-size: 0.9rem;
+            line-height: 1.75;
+            color: #9ca3af;
+            margin-bottom: 1.4rem;
+        }
+
+        /* Highlights bullet points */
+        .tl-highlights {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.6rem;
+            padding: 1.2rem 1.4rem;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid var(--border);
+            border-radius: 0;
+        }
+        .tl-hl-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+        .tl-check-icon {
+            font-size: 1.05rem !important;
+            color: var(--accent-hi);
+            margin-top: 0.15rem;
+            flex-shrink: 0;
+        }
+
+        /* Card Tags */
+        .tl-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+        .tl-tag {
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--txt-muted);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 0.3rem 0.65rem;
+            transition: all 0.25s ease;
+        }
+        .tl-item.active .tl-tag {
+            color: var(--accent-hi);
+            background: rgba(31, 194, 99, 0.05);
+            border-color: rgba(31, 194, 99, 0.22);
+        }
 
         /* ─────────────────────────────────────────
            CONTACT / FOOTER
@@ -1498,8 +2011,13 @@
             .about-grid         { grid-template-columns: 1fr; gap: 3rem; }
             .skills-grid        { grid-template-columns: 1fr 1fr; }
             .skills-header      { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 3rem; }
-            .exp-layout         { grid-template-columns: 1fr; gap: 3rem; }
-            .exp-sticky         { position: relative; top: auto; }
+            .exp-layout         { grid-template-columns: 1fr; gap: 2rem; margin-top: 2.2rem; }
+            .exp-col-left       { display: none !important; }
+            .exp-sticky         { display: none !important; }
+            .timeline           { padding-bottom: 1.5rem; gap: 2.2rem; }
+            .tl-item            { padding-left: 3rem; }
+            .tl-card            { padding: 1.8rem 1.6rem; }
+            .tl-company-name    { font-size: 1.35rem; }
             .contact-row        { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
             .social-inner       { flex-direction: column; gap: 2.5rem; }
             .social-cards       { flex-wrap: wrap; }
@@ -1508,7 +2026,8 @@
             .results-stats      { flex-wrap: wrap; }
             .rstat              { flex: 0 0 50%; border-bottom: 1px solid var(--border); }
             .edu-grid           { grid-template-columns: 1fr; gap: 1rem; }
-            .perf-grid          { grid-template-columns: 1fr; gap: 2rem; }
+            .perf-slide         { flex: 0 0 clamp(360px, 72vw, 620px); }
+            .perf-nav-btn       { width: 40px; height: 40px; }
         }
 
         /* ─────────────────────────────────────────
@@ -1593,10 +2112,24 @@
             .gban-inner         { grid-template-columns: 1fr; gap: 2.5rem; }
             .gban-right         { grid-template-columns: 1fr 1fr; }
 
+            /* Performance slider */
+            .perf-slide         { flex: 0 0 clamp(290px, 86vw, 480px); }
+            .perf-slider-viewport { padding: 1.5rem 0; }
+            .perf-nav-btn       { display: none; }
+
             /* Experience */
-            .exp-layout         { grid-template-columns: 1fr; gap: 2rem; }
-            .exp-sticky         { position: relative; top: auto; display: none; }
-            .tl-item            { padding: 2rem 0 2rem 2rem; }
+            .exp-layout         { grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.8rem; }
+            .exp-col-left       { display: none !important; }
+            .exp-sticky         { display: none !important; }
+            .timeline           { padding-bottom: 1.5rem; gap: 1.8rem; }
+            .timeline::before   { left: 14px; }
+            .tl-item            { padding-left: 2.6rem; }
+            .tl-node            { width: 26px; height: 26px; font-size: 0.65rem; top: 1.6rem; left: 1px; border-radius: 0; }
+            .tl-card            { padding: 1.5rem 1.3rem; border-radius: 0; }
+            .tl-company-name    { font-size: 1.25rem; }
+            .tl-summary         { font-size: 0.85rem; line-height: 1.65; }
+            .tl-highlights      { padding: 0.9rem 1rem; gap: 0.65rem; }
+            .tl-hl-item         { font-size: 0.8rem; }
 
             /* About */
             .about-grid         { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -1630,7 +2163,15 @@
             .photo-frame        { width: min(78vw, 260px); height: min(96vw, 320px); }
             .gban-right         { grid-template-columns: 1fr; }
             .info-cards         { gap: 1.5px; }
-            .exp-big-num        { font-size: 4rem; }
+            .exp-layout         { margin-top: 1.4rem; gap: 1.2rem; }
+            .timeline::before   { left: 11px; }
+            .tl-item            { padding-left: 2.2rem; }
+            .tl-node            { width: 22px; height: 22px; font-size: 0.6rem; top: 1.4rem; left: 0; border-radius: 0; }
+            .tl-card            { padding: 1.3rem 1.1rem; border-radius: 0; }
+            .tl-card-top        { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+            .tl-company-name    { font-size: 1.15rem; }
+            .tl-period-badge    { font-size: 0.68rem; padding: 0.25rem 0.65rem; }
+            .tl-highlights      { padding: 0.8rem 0.85rem; }
             .section            { padding: 3.5rem 1rem 5rem; }
             .stat-val           { font-size: 1.5rem; }
         }
@@ -2228,21 +2769,73 @@
             Real data backing up the ranking claims.
         </p>
 
-        <div class="perf-grid">
-            <div class="perf-card">
-                <div class="perf-card-inner">
-                    <img src="img/gsc-proof-1.jpeg" alt="GSC Performance Proof 1" loading="lazy">
+        <div class="perf-slider-wrap" id="perfSlider">
+            <!-- Navigation buttons -->
+            <button type="button" class="perf-nav-btn prev" id="perfPrev" aria-label="Previous proof">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button type="button" class="perf-nav-btn next" id="perfNext" aria-label="Next proof">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+
+            <!-- Viewport & Track -->
+            <div class="perf-slider-viewport" id="perfViewport">
+                <div class="perf-slider-track" id="perfTrack">
+                    <!-- Slide 01 -->
+                    <div class="perf-slide" data-index="0">
+                        <div class="perf-card">
+                            <div class="perf-card-inner">
+                                <img src="img/gsc-proof-1.jpeg" alt="GSC Performance Proof 1 — Total Clicks 1.29k" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 02 -->
+                    <div class="perf-slide" data-index="1">
+                        <div class="perf-card">
+                            <div class="perf-card-inner">
+                                <img src="img/gsc-proof-2.jpeg" alt="GSC Performance Proof 2 — Average Position 14.4" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 03 -->
+                    <div class="perf-slide" data-index="2">
+                        <div class="perf-card">
+                            <div class="perf-card-inner">
+                                <img src="img/gsc-proof-3.jpeg" alt="GSC Performance Proof 3 — Total Impressions 97.2k" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 04 (Duplicate of Proof 1) -->
+                    <div class="perf-slide" data-index="3">
+                        <div class="perf-card">
+                            <div class="perf-card-inner">
+                                <img src="img/gsc-proof-1.jpeg" alt="GSC Performance Proof 4 — Clicks Growth" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 05 (Duplicate of Proof 2) -->
+                    <div class="perf-slide" data-index="4">
+                        <div class="perf-card">
+                            <div class="perf-card-inner">
+                                <img src="img/gsc-proof-2.jpeg" alt="GSC Performance Proof 5 — Ranking Growth" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 06 (Duplicate of Proof 3) -->
+                    <div class="perf-slide" data-index="5">
+                        <div class="perf-card">
+                            <div class="perf-card-inner">
+                                <img src="img/gsc-proof-3.jpeg" alt="GSC Performance Proof 6 — Search Visibility" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="perf-card">
-                <div class="perf-card-inner">
-                    <img src="img/gsc-proof-2.jpeg" alt="GSC Performance Proof 2" loading="lazy">
-                </div>
-            </div>
-            <div class="perf-card">
-                <div class="perf-card-inner">
-                    <img src="img/gsc-proof-3.jpeg" alt="GSC Performance Proof 3" loading="lazy">
-                </div>
+
+            <!-- Controls (Dots & Counter) -->
+            <div class="perf-slider-controls">
+                <div class="perf-slider-dots" id="perfDots"></div>
+                <div class="perf-slider-counter" id="perfCounter"><em>01</em> / 06</div>
             </div>
         </div>
     </div>
@@ -2259,58 +2852,182 @@
 
         <div class="exp-layout">
 
-            <!-- Sticky preview panel -->
+            <!-- Sticky preview panel (Left) -->
             <div class="exp-sticky">
-                <div class="exp-big-num" id="expNum">01</div>
-                <div class="exp-current-role" id="expRole">SEO Executive</div>
-                <div class="exp-current-co" id="expCo">Iberr Technologies · Kerala, India</div>
-                <p class="exp-current-desc" id="expDesc">Executed full-cycle SEO campaigns for multiple clients — keyword research, on-page optimization, link building, and performance tracking. Implemented AEO with Schema Markup and local SEO strategies that ranked businesses on Google Maps and local search results.</p>
-                <div class="exp-current-tags" id="expTags">
-                    <span class="exp-tag">On-Page SEO</span>
-                    <span class="exp-tag">Local SEO</span>
-                    <span class="exp-tag">AEO</span>
-                    <span class="exp-tag">Schema Markup</span>
+                <div class="exp-sticky-card">
+                    <div class="exp-card-header">
+                        <div class="exp-status-chip">
+                            <span class="exp-pulse-dot"></span>
+                            <span id="expStatus">MILESTONE 01</span>
+                        </div>
+                        <div class="exp-big-num" id="expNum" data-current="01">01</div>
+                    </div>
+
+                    <div class="exp-role-wrap">
+                        <h3 class="exp-current-role" id="expRole">SEO Executive</h3>
+                        <div class="exp-meta-line">
+                            <span class="exp-current-co"><span class="material-symbols-outlined exp-icon">business</span> <span id="expCo">Iberr Technologies</span></span>
+                            <span class="exp-dot-sep">•</span>
+                            <span id="expLoc" class="exp-current-loc">Kerala, India</span>
+                            <span class="exp-dot-sep">•</span>
+                            <span class="exp-date-chip"><span class="material-symbols-outlined exp-icon-sm">calendar_month</span> <span id="expDate">Dec 2024 — Dec 2025</span></span>
+                        </div>
+                    </div>
+
+                    <div class="exp-divider"></div>
+
+                    <p class="exp-current-desc" id="expDesc">
+                        Executed full-cycle SEO campaigns for multiple clients — keyword research, on-page optimization, link building, and performance tracking. Implemented AEO with Schema Markup and local SEO strategies that ranked businesses on Google Maps and local search results.
+                    </p>
+
+                    <div class="exp-tags-section">
+                        <span class="exp-tags-title">Core Competencies</span>
+                        <div class="exp-current-tags" id="expTags">
+                            <span class="exp-tag">On-Page SEO</span>
+                            <span class="exp-tag">Local SEO</span>
+                            <span class="exp-tag">AEO</span>
+                            <span class="exp-tag">Schema Markup</span>
+                            <span class="exp-tag">SERP Tracking</span>
+                        </div>
+                    </div>
+
+                    <!-- Stepper navigation -->
+                    <div class="exp-nav-pills">
+                        <button type="button" class="exp-pill active" data-target="01" aria-label="Jump to Milestone 01">
+                            <span class="exp-pill-num">01</span>
+                            <span class="exp-pill-name">Iberr Technologies</span>
+                        </button>
+                        <button type="button" class="exp-pill" data-target="02" aria-label="Jump to Milestone 02">
+                            <span class="exp-pill-num">02</span>
+                            <span class="exp-pill-name">Digitz Technologies</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Timeline items -->
+            <!-- Timeline items (Right) -->
             <div class="timeline" id="timeline">
 
+                <!-- Item 01 -->
                 <div class="tl-item active"
+                     id="tlItem1"
                      data-num="01"
                      data-role="SEO Executive"
-                     data-co="Iberr Technologies · Kerala, India"
+                     data-co="Iberr Technologies"
+                     data-loc="Kerala, India"
+                     data-date="Dec 2024 — Dec 2025"
+                     data-status="MILESTONE 01"
                      data-desc="Executed full-cycle SEO campaigns for multiple clients — keyword research, on-page optimization, link building, and performance tracking. Implemented AEO with Schema Markup and local SEO strategies that ranked businesses on Google Maps and local search results."
-                     data-tags="On-Page SEO,Local SEO,AEO,Schema Markup">
-                    <div class="tl-line"></div>
-                    <div class="tl-dot"></div>
-                    <div class="tl-header">
-                        <div class="tl-role">SEO Executive</div>
-                        <div class="tl-date">Dec 2024 — Dec 2025</div>
-                    </div>
-                    <div class="tl-company">Iberr Technologies</div>
-                    <div class="tl-location">Kerala, India</div>
-                    <div class="tl-detail">
-                        Executed SEO strategies for multiple websites including keyword research, on-page optimization, link building, and performance tracking. Specialized in AEO and Structured Data — Schema Markup and rich result strategies to improve SERP visibility. Implemented Local SEO campaigns to enhance Google Maps rankings and supported social media marketing for brand growth.
+                     data-tags="On-Page SEO, Local SEO, AEO, Schema Markup, SERP Tracking">
+
+                    <div class="tl-node">01</div>
+
+                    <div class="tl-card">
+                        <div class="tl-card-top">
+                            <div>
+                                <span class="tl-badge">SEO Executive</span>
+                                <h3 class="tl-company-name">Iberr Technologies</h3>
+                            </div>
+                            <div class="tl-period-badge">
+                                <span class="material-symbols-outlined tl-cal-icon">calendar_month</span>
+                                <span>Dec 2024 — Dec 2025</span>
+                            </div>
+                        </div>
+
+                        <div class="tl-location-row">
+                            <span class="material-symbols-outlined tl-loc-icon">location_on</span>
+                            <span>Kerala, India</span>
+                            <span class="tl-badge-sub">Full-time</span>
+                        </div>
+
+                        <p class="tl-summary">
+                            Executed end-to-end SEO strategies for diverse business websites, driving noticeable organic gains, keyword indexing velocity, and targeted regional footfall.
+                        </p>
+
+                        <div class="tl-highlights">
+                            <div class="tl-hl-item">
+                                <span class="material-symbols-outlined tl-check-icon">check_circle</span>
+                                <span>Executed keyword research, competitive benchmarking, on-page optimization, link-building &amp; SERP tracking.</span>
+                            </div>
+                            <div class="tl-hl-item">
+                                <span class="material-symbols-outlined tl-check-icon">check_circle</span>
+                                <span>Specialized in Answer Engine Optimization (AEO) and Structured Data (JSON-LD Schema) for Google rich results &amp; AI answers.</span>
+                            </div>
+                            <div class="tl-hl-item">
+                                <span class="material-symbols-outlined tl-check-icon">check_circle</span>
+                                <span>Executed high-converting Local SEO campaigns optimizing Google Business Profile to capture top 3 Map Pack rankings.</span>
+                            </div>
+                        </div>
+
+                        <div class="tl-card-tags">
+                            <span class="tl-tag">On-Page SEO</span>
+                            <span class="tl-tag">Local SEO</span>
+                            <span class="tl-tag">AEO</span>
+                            <span class="tl-tag">Schema Markup</span>
+                            <span class="tl-tag">SERP Tracking</span>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Item 02 -->
                 <div class="tl-item"
+                     id="tlItem2"
                      data-num="02"
                      data-role="SEO Analyst"
-                     data-co="Digitz Technologies · Dubai / Calicut"
-                     data-desc="Conduct in-depth keyword research and develop strategic SEO plans for UAE clients. Handle technical SEO tasks including site speed optimization, crawl error fixes, structured data, and AEO implementation — driving measurable search ranking improvements."
-                     data-tags="Technical SEO,UAE Clients,Keyword Research,Link Building">
-                    <div class="tl-line"></div>
-                    <div class="tl-dot"></div>
-                    <div class="tl-header">
-                        <div class="tl-role">SEO Analyst <span style="font-size:.65em;color:var(--accent-hi);font-weight:600;margin-left:.5rem;">● Current</span></div>
-                        <div class="tl-date">Dec 2025 — Present</div>
-                    </div>
-                    <div class="tl-company">Digitz Technologies</div>
-                    <div class="tl-location">Dubai · Calicut Operations</div>
-                    <div class="tl-detail">
-                        Conducting in-depth keyword research and developing strategic SEO plans to enhance search rankings. Using tools including Google Analytics, Search Console, SEMrush, Ubersuggest, Screaming Frog, Ahrefs, Moz, and Microsoft Clarity. Handling UAE clients, resolving technical SEO issues, and implementing link-building strategies. Expert in local SEO for UAE and regional market visibility.
+                     data-co="Digitz Technologies"
+                     data-loc="Dubai · Calicut Operations"
+                     data-date="Dec 2025 — Sep 2026"
+                     data-status="LATEST ROLE"
+                     data-desc="Conducted in-depth keyword research and developed strategic SEO plans for UAE clients. Handled technical SEO tasks including site speed optimization, crawl error fixes, structured data, and AEO implementation — driving measurable search ranking improvements."
+                     data-tags="Technical SEO, UAE Clients, Keyword Research, Link Building, Crawl Audits, Core Web Vitals">
+
+                    <div class="tl-node">02</div>
+
+                    <div class="tl-card">
+                        <div class="tl-card-top">
+                            <div>
+                                <span class="tl-badge">SEO Analyst</span>
+                                <h3 class="tl-company-name">Digitz Technologies</h3>
+                            </div>
+                            <div class="tl-period-badge">
+                                <span class="material-symbols-outlined tl-cal-icon">calendar_month</span>
+                                <span>Dec 2025 — Sep 2026</span>
+                            </div>
+                        </div>
+
+                        <div class="tl-location-row">
+                            <span class="material-symbols-outlined tl-loc-icon">location_on</span>
+                            <span>Dubai · Calicut Operations</span>
+                            <span class="tl-badge-sub">Client Facing</span>
+                        </div>
+
+                        <p class="tl-summary">
+                            Led technical audits and strategic search optimization for UAE and international enterprise clients, ensuring rapid crawl efficiency and high commercial intent conversions.
+                        </p>
+
+                        <div class="tl-highlights">
+                            <div class="tl-hl-item">
+                                <span class="material-symbols-outlined tl-check-icon">check_circle</span>
+                                <span>Conducted comprehensive keyword research &amp; developed customized SEO roadmaps for competitive UAE markets.</span>
+                            </div>
+                            <div class="tl-hl-item">
+                                <span class="material-symbols-outlined tl-check-icon">check_circle</span>
+                                <span>Resolved critical technical SEO issues: crawl errors, indexing bottlenecks, XML sitemaps, canonicals &amp; Core Web Vitals.</span>
+                            </div>
+                            <div class="tl-hl-item">
+                                <span class="material-symbols-outlined tl-check-icon">check_circle</span>
+                                <span>Employed industry-leading tool suite: Google Analytics 4, Search Console, SEMrush, Screaming Frog, Ahrefs, Moz &amp; Clarity.</span>
+                            </div>
+                        </div>
+
+                        <div class="tl-card-tags">
+                            <span class="tl-tag">Technical SEO</span>
+                            <span class="tl-tag">UAE Clients</span>
+                            <span class="tl-tag">Keyword Research</span>
+                            <span class="tl-tag">Link Building</span>
+                            <span class="tl-tag">Crawl Audits</span>
+                            <span class="tl-tag">Core Web Vitals</span>
+                        </div>
                     </div>
                 </div>
 
@@ -2415,7 +3132,7 @@
                 <span class="material-symbols-outlined" style="font-size:2rem;color:var(--accent-hi);margin-bottom:.5rem;">business</span>
                 <div class="sc-platform">Company</div>
                 <div class="sc-name">Digitz Technologies</div>
-                <div class="sc-handle">Current Workplace →</div>
+                <div class="sc-handle">Recent Workplace →</div>
                 <span class="sc-arrow">↗</span>
             </a>
 
@@ -2522,17 +3239,19 @@
 /* ─────────────────────────────────────────
    TAILWIND CONFIG
 ───────────────────────────────────────── */
-tailwind.config = {
-    theme: {
-        extend: {
-            colors: {
-                bg: '#0A0A0B',
-                accent: '#0C5C36',
-                'accent-hi': '#1FC263',
+if (typeof tailwind !== 'undefined') {
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    bg: '#0A0A0B',
+                    accent: '#0C5C36',
+                    'accent-hi': '#1FC263',
+                }
             }
         }
-    }
-};
+    };
+}
 
 /* ─────────────────────────────────────────
    GSAP PLUGINS
@@ -2596,7 +3315,7 @@ if (isTouch) {
         requestAnimationFrame(tickOuter);
     })();
 
-    document.querySelectorAll('a, button, .skill-card, .info-card, .tl-item').forEach(el => {
+    document.querySelectorAll('a, button, .skill-card, .info-card, .tl-item, .tl-card, .exp-pill, .perf-nav-btn, .perf-dot, .perf-slide').forEach(el => {
         el.addEventListener('mouseenter', () => cOuter.classList.add('is-hover'));
         el.addEventListener('mouseleave', () => cOuter.classList.remove('is-hover'));
     });
@@ -2763,6 +3482,7 @@ function bootSite() {
     initMarquee();
     if (!isTouch) initSkillsTilt();
     initTimeline();
+    initPerfSlider();
     if (!isTouch) initMagneticButtons();
 
     /* Refresh after layout settles so trigger positions are accurate */
@@ -2937,11 +3657,11 @@ function initScrollReveals() {
             scrollTrigger: { trigger: '.perf-desc', start: 'top 90%', ...st }
         }
     );
-    gsap.fromTo('.perf-card',
-        { y: 50, opacity: 0 },
+    gsap.fromTo('.perf-slider-wrap',
+        { y: 40, opacity: 0 },
         {
-            y: 0, opacity: 1, stagger: .15, duration: .9, ease: 'power3.out',
-            scrollTrigger: { trigger: '.perf-grid', start: 'top 85%', ...st }
+            y: 0, opacity: 1, duration: .9, ease: 'power3.out',
+            scrollTrigger: { trigger: '.perf-slider-wrap', start: 'top 85%', ...st }
         }
     );
 }
@@ -2981,74 +3701,410 @@ function initSkillsTilt() {
 }
 
 /* ─────────────────────────────────────────
-   EXPERIENCE TIMELINE
+   EXPERIENCE TIMELINE — REDESIGNED & FIXED
 ───────────────────────────────────────── */
 function initTimeline() {
-    const items  = document.querySelectorAll('.tl-item');
-    const numEl  = document.getElementById('expNum');
-    const roleEl = document.getElementById('expRole');
-    const coEl   = document.getElementById('expCo');
-    const descEl = document.getElementById('expDesc');
-    const tagsEl = document.getElementById('expTags');
-    const hasPanel = numEl && roleEl && coEl && descEl && tagsEl;
+    const items     = Array.from(document.querySelectorAll('.tl-item'));
+    const numEl     = document.getElementById('expNum');
+    const roleEl    = document.getElementById('expRole');
+    const coEl      = document.getElementById('expCo');
+    const locEl     = document.getElementById('expLoc');
+    const dateEl    = document.getElementById('expDate');
+    const statusEl  = document.getElementById('expStatus');
+    const descEl    = document.getElementById('expDesc');
+    const tagsEl    = document.getElementById('expTags');
+    const hasPanel  = numEl && roleEl && coEl && descEl && tagsEl;
+    const isDesktop = window.innerWidth > 1024;
+
+    let currentActiveNum = '01';
 
     function setActive(item) {
+        if (!item) return;
         items.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
+        currentActiveNum = item.dataset.num || '';
+
+        // Sync stepper pills in left panel
+        document.querySelectorAll('.exp-pill').forEach(pill => {
+            pill.classList.toggle('active', pill.dataset.target === currentActiveNum);
+        });
     }
 
     function updatePanel(item) {
         if (!hasPanel) return;
-        const targets = [numEl, roleEl, coEl, descEl, tagsEl];
+        const newNum = item.dataset.num || '';
+
+        // Prevent redundant animation if already showing this milestone
+        if (numEl.getAttribute('data-current') === newNum) return;
+        numEl.setAttribute('data-current', newNum);
+
+        const targets = [numEl, roleEl, coEl, locEl, dateEl, statusEl, descEl, tagsEl].filter(Boolean);
+
         gsap.to(targets, {
-            y: -16, opacity: 0, duration: .22, stagger: .04, ease: 'power2.in',
+            y: -10,
+            opacity: 0,
+            duration: 0.18,
+            stagger: 0.02,
+            ease: 'power2.in',
             onComplete: () => {
-                numEl.textContent  = item.dataset.num  || '';
-                roleEl.textContent = item.dataset.role || '';
-                coEl.textContent   = item.dataset.co   || '';
-                descEl.textContent = item.dataset.desc || '';
-                const tagNames = (item.dataset.tags || '').split(',');
-                tagsEl.innerHTML = tagNames.map(t =>
-                    `<span class="exp-tag">${t.trim()}</span>`
-                ).join('');
+                if (numEl)    numEl.textContent    = item.dataset.num    || '';
+                if (roleEl)   roleEl.textContent   = item.dataset.role   || '';
+                if (coEl)     coEl.textContent     = item.dataset.co     || '';
+                if (locEl)    locEl.textContent    = item.dataset.loc    || '';
+                if (dateEl)   dateEl.textContent   = item.dataset.date   || '';
+                if (statusEl) statusEl.textContent = item.dataset.status || ('MILESTONE ' + (item.dataset.num || ''));
+                if (descEl)   descEl.textContent   = item.dataset.desc   || '';
+
+                if (tagsEl) {
+                    const tagNames = (item.dataset.tags || '').split(',');
+                    tagsEl.innerHTML = tagNames.map(t =>
+                        `<span class="exp-tag">${t.trim()}</span>`
+                    ).join('');
+                }
+
+                document.querySelectorAll('.exp-pill').forEach(pill => {
+                    pill.classList.toggle('active', pill.dataset.target === newNum);
+                });
+
                 gsap.fromTo(targets,
-                    { y: 16, opacity: 0 },
-                    { y: 0, opacity: 1, duration: .38, stagger: .055, ease: 'power3.out' }
+                    { y: 10, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.32, stagger: 0.03, ease: 'power3.out' }
                 );
             }
         });
     }
 
+    function scrollToCenter(item) {
+        const rect = item.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = scrollTop + rect.top - Math.max(90, (window.innerHeight - rect.height) / 2);
+
+        if (window.lenis) {
+            window.lenis.scrollTo(targetY, { duration: 1.1 });
+        } else {
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+        }
+    }
+
+    // Set initial active state
+    if (items.length > 0) {
+        setActive(items[0]);
+        if (hasPanel) numEl.setAttribute('data-current', items[0].dataset.num || '');
+    }
+
+    // Interactive clicking on timeline cards
     items.forEach(item => {
         item.addEventListener('click', () => {
             if (item.classList.contains('active')) return;
-            setActive(item); updatePanel(item);
+            setActive(item);
+            if (hasPanel && isDesktop) updatePanel(item);
+            scrollToCenter(item);
         });
+    });
 
-        ScrollTrigger.create({
-            trigger: item, start: 'top 55%', end: 'bottom 55%',
-            onEnter:     () => { setActive(item); updatePanel(item); },
-            onEnterBack: () => { setActive(item); updatePanel(item); },
+    // Interactive clicking on left panel stepper buttons
+    document.querySelectorAll('.exp-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetNum = pill.dataset.target;
+            const targetItem = items.find(i => i.dataset.num === targetNum);
+            if (targetItem) {
+                setActive(targetItem);
+                if (hasPanel && isDesktop) updatePanel(targetItem);
+                scrollToCenter(targetItem);
+            }
         });
+    });
 
+    // ScrollTrigger: When item reaches CENTER (50%) of viewport, switch active card & update left panel!
+    items.forEach((item, index) => {
+        if (index === 0) {
+            // First item: active on entering section until next card reaches center
+            ScrollTrigger.create({
+                trigger: item,
+                start: 'top 80%',
+                end: 'bottom 50%',
+                onEnter: () => {
+                    const nextItem = items[1];
+                    if (!nextItem || nextItem.getBoundingClientRect().top > window.innerHeight * 0.5) {
+                        setActive(item);
+                        if (hasPanel && isDesktop) updatePanel(item);
+                    }
+                },
+                onEnterBack: () => {
+                    setActive(item);
+                    if (hasPanel && isDesktop) updatePanel(item);
+                }
+            });
+        } else {
+            // Subsequent items (e.g. data-num="02"):
+            // Triggers exactly when top of card reaches viewport center (50%)!
+            ScrollTrigger.create({
+                trigger: item,
+                start: 'top 50%',
+                end: 'bottom 50%',
+                onEnter: () => {
+                    setActive(item);
+                    if (hasPanel && isDesktop) updatePanel(item);
+                },
+                onEnterBack: () => {
+                    setActive(item);
+                    if (hasPanel && isDesktop) updatePanel(item);
+                },
+                onLeaveBack: () => {
+                    // Scrolling backwards: reactivate previous milestone when this card drops below center
+                    const prevItem = items[index - 1];
+                    if (prevItem) {
+                        setActive(prevItem);
+                        if (hasPanel && isDesktop) updatePanel(prevItem);
+                    }
+                }
+            });
+        }
+
+        // Entrance animation
         gsap.fromTo(item,
-            { x: 50, opacity: 0 },
+            { y: 30, opacity: 0 },
             {
-                x: 0, opacity: 1, duration: .85, ease: 'power3.out',
-                scrollTrigger: { trigger: item, start: 'top 90%', toggleActions: 'play none none none' }
+                y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
+                scrollTrigger: { trigger: item, start: 'top 92%', toggleActions: 'play none none none' }
             }
         );
     });
 
-    if (hasPanel) {
-        gsap.fromTo('.exp-sticky > *',
-            { x: -40, opacity: 0 },
+    // Left sticky panel entrance
+    if (hasPanel && isDesktop) {
+        gsap.fromTo('.exp-sticky-card',
+            { x: -30, opacity: 0 },
             {
-                x: 0, opacity: 1, stagger: .1, duration: .9, ease: 'power3.out',
-                scrollTrigger: { trigger: '.exp-sticky', start: 'top 82%', toggleActions: 'play none none none' }
+                x: 0, opacity: 1, duration: 0.85, ease: 'power3.out',
+                scrollTrigger: { trigger: '#experience', start: 'top 75%', toggleActions: 'play none none none' }
             }
         );
     }
+}
+
+/* ─────────────────────────────────────────
+   SEARCH CONSOLE PERFORMANCE SLIDER
+───────────────────────────────────────── */
+function initPerfSlider() {
+    const wrap = document.getElementById('perfSlider');
+    const viewport = document.getElementById('perfViewport');
+    const track = document.getElementById('perfTrack');
+    const prevBtn = document.getElementById('perfPrev');
+    const nextBtn = document.getElementById('perfNext');
+    const dotsContainer = document.getElementById('perfDots');
+    const counterEl = document.getElementById('perfCounter');
+
+    if (!wrap || !viewport || !track) return;
+
+    const originalSlides = Array.from(track.children);
+    const totalReal = originalSlides.length; // 6 slides
+    if (totalReal < 2) return;
+
+    // Create pagination dots
+    if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < totalReal; i++) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = `perf-dot ${i === 0 ? 'active' : ''}`;
+            dot.setAttribute('aria-label', `Go to proof slide ${i + 1}`);
+            dot.addEventListener('click', () => {
+                goToRealIndex(i);
+                resetAutoSlide();
+            });
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    // Clone 2 slides before and 2 slides after for smooth infinite circular looping
+    const CLONE_COUNT = 2;
+    const clonesBefore = [];
+    const clonesAfter = [];
+
+    for (let i = totalReal - CLONE_COUNT; i < totalReal; i++) {
+        const clone = originalSlides[i].cloneNode(true);
+        clone.classList.add('is-clone');
+        clonesBefore.push(clone);
+    }
+    for (let i = 0; i < CLONE_COUNT; i++) {
+        const clone = originalSlides[i].cloneNode(true);
+        clone.classList.add('is-clone');
+        clonesAfter.push(clone);
+    }
+
+    // Insert clones
+    clonesBefore.reverse().forEach(c => track.insertBefore(c, track.firstChild));
+    clonesAfter.forEach(c => track.appendChild(c));
+
+    const allSlides = Array.from(track.children);
+    let currentIndex = CLONE_COUNT; // Real slide 0 is at index 2
+    let isTransitioning = false;
+    let autoSlideTimer = null;
+
+    function getRealIndex(idx) {
+        let r = (idx - CLONE_COUNT) % totalReal;
+        if (r < 0) r += totalReal;
+        return r;
+    }
+
+    function updateSlider(animate = true) {
+        const currentSlide = allSlides[currentIndex];
+        if (!currentSlide) return;
+
+        const viewportWidth = viewport.offsetWidth;
+        const slideWidth = currentSlide.offsetWidth;
+        const slideLeft = currentSlide.offsetLeft;
+        const targetX = (viewportWidth / 2) - (slideLeft + slideWidth / 2);
+
+        if (animate) {
+            track.style.transition = 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1)';
+        } else {
+            track.style.transition = 'none';
+        }
+        track.style.transform = `translateX(${targetX}px)`;
+
+        // Highlight center slide
+        allSlides.forEach((slide, i) => {
+            slide.classList.toggle('is-center', i === currentIndex);
+        });
+
+        // Update dots and counter
+        const realIdx = getRealIndex(currentIndex);
+        if (dotsContainer) {
+            const dots = dotsContainer.querySelectorAll('.perf-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === realIdx);
+            });
+        }
+        if (counterEl) {
+            counterEl.innerHTML = `<em>0${realIdx + 1}</em> / 0${totalReal}`;
+        }
+    }
+
+    function goToRealIndex(targetRealIdx) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex = targetRealIdx + CLONE_COUNT;
+        updateSlider(true);
+    }
+
+    function nextSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex++;
+        updateSlider(true);
+    }
+
+    function prevSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex--;
+        updateSlider(true);
+    }
+
+    // Seamless wrap on transitionend
+    track.addEventListener('transitionend', () => {
+        isTransitioning = false;
+        if (currentIndex >= totalReal + CLONE_COUNT) {
+            currentIndex = currentIndex - totalReal;
+            updateSlider(false);
+        } else if (currentIndex < CLONE_COUNT) {
+            currentIndex = currentIndex + totalReal;
+            updateSlider(false);
+        }
+    });
+
+    // Auto slide
+    function startAutoSlide() {
+        stopAutoSlide();
+        autoSlideTimer = setInterval(() => {
+            nextSlide();
+        }, 3600);
+    }
+    function stopAutoSlide() {
+        if (autoSlideTimer) {
+            clearInterval(autoSlideTimer);
+            autoSlideTimer = null;
+        }
+    }
+    function resetAutoSlide() {
+        stopAutoSlide();
+        startAutoSlide();
+    }
+
+    // Button controls
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            nextSlide();
+            resetAutoSlide();
+        });
+    }
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            prevSlide();
+            resetAutoSlide();
+        });
+    }
+
+    // Clicking a side slide directly scrolls it to center
+    allSlides.forEach((slide, i) => {
+        slide.addEventListener('click', () => {
+            if (i !== currentIndex) {
+                currentIndex = i;
+                updateSlider(true);
+                resetAutoSlide();
+            }
+        });
+    });
+
+    // Pause on hover
+    wrap.addEventListener('mouseenter', stopAutoSlide);
+    wrap.addEventListener('mouseleave', startAutoSlide);
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwiping = false;
+
+    viewport.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isSwiping = true;
+        stopAutoSlide();
+    }, { passive: true });
+
+    viewport.addEventListener('touchend', (e) => {
+        if (!isSwiping) return;
+        isSwiping = false;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+            if (diffX > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+        startAutoSlide();
+    }, { passive: true });
+
+    // Window resize handler
+    window.addEventListener('resize', () => {
+        updateSlider(false);
+    });
+
+    // Initial render
+    setTimeout(() => {
+        updateSlider(false);
+        startAutoSlide();
+    }, 120);
 }
 
 /* ─────────────────────────────────────────
