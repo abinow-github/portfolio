@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Seetha Lakshmi.M — Dynamic SEO Analyst driving measurable organic growth through Technical SEO, Content Strategy, and Answer Engine Optimization.">
+    <meta name="description" content="Seetha Lakshmi.M — Dynamic Digital Marketer driving measurable organic growth through Technical SEO, Content Strategy, and Answer Engine Optimization.">
     <meta name="author" content="Seetha Lakshmi.M">
-    <title>Seetha Lakshmi.M | SEO Analyst</title>
+    <title>Seetha Lakshmi.M | Digital Marketer</title>
 
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -710,10 +710,11 @@
         }
         .results-grid {
             display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 1px;
             background: var(--border);
             border: 1px solid var(--border);
+            margin-top: 4rem;
         }
         .result-card {
             background: var(--bg-card);
@@ -1580,17 +1581,72 @@
         .photo-tag {
             position: absolute; bottom: -1.5rem; right: -1.5rem;
             background: var(--accent);
-            padding: 1rem 1.4rem; z-index: 5;
+            padding: 1.1rem 1.35rem; z-index: 5;
+            border: 1px solid rgba(31, 194, 99, 0.25);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+            max-width: 320px;
         }
         .photo-tag-role {
             font-family: 'Outfit', sans-serif;
-            font-size: .65rem; font-weight: 800;
+            font-size: .68rem; font-weight: 800;
             letter-spacing: .15em; text-transform: uppercase;
-            color: var(--txt);
+            color: #ffffff;
+            line-height: 1.2;
+        }
+        .photo-tag-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+            margin: .55rem 0 .45rem;
+        }
+        .ptag-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            font-family: 'Inter', sans-serif;
+            font-size: .56rem;
+            font-weight: 600;
+            letter-spacing: .02em;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            padding: .2rem .55rem;
+            border-radius: 999px;
+            white-space: nowrap;
+            line-height: 1.2;
+            transition: background .2s, border-color .2s;
+        }
+        .ptag-chip:hover {
+            background: rgba(31, 194, 99, 0.28);
+            border-color: var(--accent-hi);
+        }
+        .ptag-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent-hi);
+            flex-shrink: 0;
+        }
+        .ptag-icon {
+            font-size: .7rem !important;
+            color: var(--accent-hi);
+            line-height: 1;
         }
         .photo-tag-co {
-            font-size: .58rem; color: rgba(240,237,232,.6);
-            margin-top: .2rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .56rem;
+            color: rgba(240,237,232,.75);
+            letter-spacing: .04em;
+        }
+        .photo-tag-co::before {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent-hi);
+            display: inline-block;
+            box-shadow: 0 0 6px var(--accent-hi);
+            flex-shrink: 0;
         }
         /* Make hero a 2-col on large screens */
         .hero-inner-grid {
@@ -2063,9 +2119,13 @@
             .photo-tag          {
                 right: 50%; bottom: -1.2rem;
                 transform: translateX(50%);
-                padding: .6rem 1rem;
+                padding: .85rem 1rem;
                 text-align: center;
+                max-width: min(92vw, 310px);
+                width: min(92vw, 310px);
             }
+            .photo-tag-chips    { justify-content: center; }
+            .photo-tag-co       { justify-content: center; }
             .photo-corner       { width: 18px; height: 18px; }
 
             /* Hero text: centered on mobile */
@@ -2245,8 +2305,13 @@
         [data-theme="light"] .btn-fill,
         [data-theme="light"] .btn-fill span,
         [data-theme="light"] .btn-resume,
-        [data-theme="light"] .photo-tag-role {
+        [data-theme="light"] .photo-tag-role,
+        [data-theme="light"] .ptag-chip {
             color: #ffffff !important;
+        }
+        [data-theme="light"] .ptag-chip {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.3);
         }
         [data-theme="light"] .photo-tag-co {
             color: rgba(255, 255, 255, 0.85) !important;
@@ -2261,7 +2326,6 @@
             box-shadow: 0 12px 32px rgba(11, 158, 82, 0.09), inset 0 0 0 1px rgba(11, 158, 82, 0.2);
             background: #FFFFFF;
         }
-        [data-theme="light"] .results-stats,
         [data-theme="light"] .results-grid {
             box-shadow: 0 4px 20px rgba(17, 24, 21, 0.03);
         }
@@ -3009,7 +3073,7 @@
 <div id="preloader">
     <div class="pre-wipe" id="preWipe"></div>
     <div style="text-align:center; position:relative; z-index:1;">
-        <div class="pre-label" id="preLabel">SEO Analyst</div>
+        <div class="pre-label" id="preLabel">Digital Marketer</div>
         <div class="pre-line" id="preLine"></div>
         <div class="pre-name"><span class="pre-name-inner" id="preName1">Seetha</span></div>
         <div class="pre-name"><span class="pre-name-inner" id="preName2">Lakshmi<span style="color:var(--accent-hi)">.</span>M</span></div>
@@ -3125,7 +3189,7 @@
         <!-- LEFT: Text content -->
         <div>
             <div class="hero-badge" id="heroBadge">
-                Dynamic SEO Analyst &amp; Digital Growth Expert
+                Dynamic Digital Marketer &amp; Growth Expert
             </div>
 
             <h1 class="hero-title">
@@ -3157,7 +3221,7 @@
 
             <div class="hero-stats" id="heroStats">
                 <div>
-                    <div class="stat-val">1<em>.</em>5<em>+</em></div>
+                    <div class="stat-val">2<em>+</em></div>
                     <div class="stat-lbl">Years Experience</div>
                 </div>
                 <div>
@@ -3183,7 +3247,7 @@
             <div class="photo-frame">
                 <div class="hero-scan"></div>
                 <img src="seetha-photo.png"
-                     alt="Seetha Lakshmi.M — SEO Analyst"
+                     alt="Seetha Lakshmi.M — Digital Marketer"
                      loading="eager"
                      style="object-position: center top;">
                 <div class="photo-corner tl"></div>
@@ -3191,7 +3255,12 @@
                 <div class="photo-corner bl"></div>
                 <div class="photo-corner br"></div>
                 <div class="photo-tag">
-                    <div class="photo-tag-role">SEO Analyst</div>
+                    <div class="photo-tag-role">Digital Marketer</div>
+                    <div class="photo-tag-chips">
+                        <span class="ptag-chip"><span class="ptag-dot"></span>SEO Analyst</span>
+                        <span class="ptag-chip"><span class="material-symbols-outlined ptag-icon">auto_awesome</span>AEO / GEO Specialist</span>
+                        <span class="ptag-chip"><span class="material-symbols-outlined ptag-icon">speed</span>Website Optimizer</span>
+                    </div>
                     <div class="photo-tag-co">Open to Opportunities</div>
                 </div>
             </div>
@@ -3247,7 +3316,7 @@
             <div>
                 <p class="about-body reveal-up" style="opacity:0; transform:translateY(40px);">
                     I'm <strong>Seetha Lakshmi.M</strong>, an SEO Analyst with
-                    <strong>1.5+ years</strong> of hands-on experience transforming
+                    <strong>2+ years</strong> of hands-on experience transforming
                     digital visibility into tangible business outcomes. My expertise spans
                     the full SEO spectrum — from granular <strong>technical audits</strong>
                     to high-level <strong>content architecture</strong> and campaign planning.
@@ -3274,7 +3343,7 @@
                 </div>
                 <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
                     <div class="info-lbl">Experience</div>
-                    <div class="info-val">1.5+ Years — Agency &amp; In-House</div>
+                    <div class="info-val">2+ Years — Agency &amp; In-House</div>
                 </div>
                 <div class="info-card reveal-up" style="opacity:0; transform:translateY(30px);">
                     <div class="info-lbl">Markets Served</div>
@@ -3476,26 +3545,6 @@
             <div class="reveal-up"><span class="reveal-up-inner dim">Rankings</span></div>
         </div>
 
-        <!-- Summary stats strip -->
-        <div class="results-stats">
-            <div class="rstat">
-                <div class="rstat-num">10<em>+</em></div>
-                <div class="rstat-lbl">Keywords Ranked</div>
-            </div>
-            <div class="rstat">
-                <div class="rstat-num">3</div>
-                <div class="rstat-lbl">Clients Delivered</div>
-            </div>
-            <div class="rstat">
-                <div class="rstat-num">100<em>%</em></div>
-                <div class="rstat-lbl">Page 1 Results</div>
-            </div>
-            <div class="rstat">
-                <div class="rstat-num">#1</div>
-                <div class="rstat-lbl">Top Position Achieved</div>
-            </div>
-        </div>
-
         <!-- Client result cards -->
         <div class="results-grid">
 
@@ -3543,30 +3592,66 @@
                 </div>
             </div>
 
-            <!-- Studio To Door -->
+            <!-- Accurate Point -->
             <div class="result-card">
                 <div class="result-card-top">
                     <span class="result-idx">02</span>
                     <div class="result-client-info">
-                        <div class="result-client">Studio To Door</div>
-                        <div class="result-niche">Photography Services &mdash; Dubai</div>
+                        <div class="result-client">Accurate Point</div>
+                        <div class="result-niche">Land &amp; Property Surveying &mdash; Dubai</div>
                     </div>
-                    <div class="result-pill">3 Keywords</div>
+                    <div class="result-pill">9 Keywords</div>
                 </div>
                 <div class="result-kws">
-                    <div class="rk-row pos2">
-                        <span class="rk-pos">#2</span>
-                        <span class="rk-kw">Passport Photo Home Service</span>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Property Survey Company Dubai</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Real Estate Surveying Company Dubai</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Professional Land Surveyor Dubai</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Property Measurement Services Dubai</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Real Estate Survey Company UAE</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Land Survey Services Dubai</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">Property Survey Services Dubai</span>
+                        <span class="rk-pg">Page 1</span>
+                    </div>
+                    <div class="rk-row pos1">
+                        <span class="rk-pos">#1</span>
+                        <span class="rk-kw">
+                            Land Surveying Company Dubai
+                            <span style="display:flex; align-items:center; gap:0.25rem; font-size:0.6rem; color:var(--accent-hi); font-weight:600; text-transform:none; margin-top:0.2rem; letter-spacing:0.02em;">
+                                <span class="material-symbols-outlined" style="font-size:0.75rem; line-height:1;">auto_awesome</span>
+                                AI Overview #2 &bull; Chat #1
+                            </span>
+                        </span>
                         <span class="rk-pg">Page 1</span>
                     </div>
                     <div class="rk-row pos2">
                         <span class="rk-pos">#2</span>
-                        <span class="rk-kw">Passport Photo Home Service</span>
-                        <span class="rk-pg">Page 1</span>
-                    </div>
-                    <div class="rk-row">
-                        <span class="rk-pos">#7</span>
-                        <span class="rk-kw">Photographer Home Service</span>
+                        <span class="rk-kw">Top Survey Companies In Dubai</span>
                         <span class="rk-pg">Page 1</span>
                     </div>
                 </div>
@@ -3615,7 +3700,7 @@
         <!-- Project Filter Buttons -->
         <div class="pcanvas-filter-bar reveal-up">
             <button type="button" class="pcanvas-filter-btn active" data-filter="all">
-                <span class="material-symbols-outlined" style="font-size:0.9rem;">view_list</span> All Projects (3)
+                <span class="material-symbols-outlined" style="font-size:0.9rem;">view_list</span> Key Projects (3)
             </button>
             <button type="button" class="pcanvas-filter-btn" data-filter="new-al-afrah">
                 01. New Al Afrah
@@ -3767,7 +3852,7 @@
                 <div class="pcanvas-topbar">
                     <div class="pcanvas-title-group">
                         <span class="pcanvas-idx">PROJECT 02</span>
-                        <h3 class="pcanvas-client-title">AITS Global</h3>
+                        <h3 class="pcanvas-client-title">AITS Safety LLC</h3>
                         <span class="pcanvas-domain-pill">Enterprise Technology &amp; IT Solutions</span>
                     </div>
                     <div class="pcanvas-badges">
@@ -4996,13 +5081,6 @@ function initScrollReveals() {
     );
 
     /* Results section */
-    gsap.fromTo('.results-stats .rstat',
-        { y: 30, opacity: 0 },
-        {
-            y: 0, opacity: 1, stagger: .1, duration: .8, ease: 'power3.out',
-            scrollTrigger: { trigger: '.results-stats', start: 'top 88%', ...st }
-        }
-    );
     gsap.fromTo('.result-card',
         { y: 50, opacity: 0 },
         {
